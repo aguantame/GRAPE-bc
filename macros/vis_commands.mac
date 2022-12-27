@@ -1,0 +1,47 @@
+/vis/viewer/set/viewpointVector 1 1 1
+/vis/viewer/set/upVector 0 0 1
+
+/vis/viewer/set/background 1 1 1
+/vis/viewer/set/globalLineWidthScale 3
+
+
+/vis/set/colour orange
+/vis/scene/add/arrow 0 125 1006.5 0 125 6.5 mm
+/vis/scene/add/arrow 0 125 6.5 0 125 1006.5 mm
+
+/vis/set/textColour orange
+/vis/scene/add/text 0 150 800 mm 20 0 0 1 m
+
+/vis/ogl/export data/test.jpg
+
+/vis/viewer/set/background 1 1 1
+/vis/viewer/set/viewpointVector 1 -1 1
+/vis/viewer/set/lightsVector -1 0 1
+/vis/geometry/set/forceSolid RotTableBase_LV 0 True
+/vis/geometry/set/forceSolid RotTableWedge_LV 0 True
+/vis/geometry/set/forceSolid RotTableTop_LV 0 True
+
+/vis/geometry/set/forceSolid Cal_LV 0 True
+/vis/geometry/set/forceSolid Pla_LV 0 True
+/vis/geometry/set/forceSolid PMT_LV 0 True
+/vis/geometry/set/forceSolid PMT_PCB_LV 0 True
+/vis/geometry/set/forceSolid PMT_Cap_LV 0 True
+/vis/geometry/set/forceSolid APB_LV 0 True
+/vis/geometry/set/forceSolid APB_Con_LV 0 True
+
+/vis/geometry/set/forceSolid ENCL_Bot_LV 0 True
+/vis/geometry/set/forceSolid MIB_Plate_LV 0 True
+/vis/geometry/set/forceSolid MIBP_Edge_LV 0 True
+/vis/geometry/set/forceSolid ENCL_Top_LV 0 True
+/vis/geometry/set/forceSolid ENCL_TopEdge_LV 0 True
+
+/vis/geometry/set/visibility Module_LV 0 False
+/vis/geometry/set/visibility ENCL_Side1_LV 0 False
+/vis/geometry/set/visibility ENCL_Side2_LV 0 False
+/vis/geometry/set/visibility ENCL_Top_LV 0 False
+/vis/geometry/set/visibility ENCL_TopEdge_LV 0 False
+
+
+/vis/drawTree
+/vis/set/touchable World_PV 0 Module_PV 0 DetColumn_PV 24 DetElement_PV 3 CalHouse_PV 0 Cal_PV 0
+/vis/touchable/dump
