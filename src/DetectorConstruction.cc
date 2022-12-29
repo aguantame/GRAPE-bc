@@ -78,6 +78,7 @@ namespace grape
     G4Element* eCr = nistManager -> FindOrBuildElement( "Cr", isotopes ); // 24
     G4Element* eMn = nistManager -> FindOrBuildElement( "Mn", isotopes ); // 25
     G4Element* eFe = nistManager -> FindOrBuildElement( "Fe", isotopes ); // 26
+    G4Element* eNi = nistManager -> FindOrBuildElement( "Ni", isotopes ); // 28
     G4Element* eCu = nistManager -> FindOrBuildElement( "Cu", isotopes ); // 29
     G4Element* eZn = nistManager -> FindOrBuildElement( "Zn", isotopes ); // 30
     G4Element* eGa = nistManager -> FindOrBuildElement( "Ga", isotopes ); // 31
@@ -86,6 +87,7 @@ namespace grape
     // G4Element* eI  = nistManager -> FindOrBuildElement( "I" , isotopes ); // 53
     // G4Element* eCs = nistManager -> FindOrBuildElement( "Cs", isotopes ); // 55
     G4Element* eGd = nistManager -> FindOrBuildElement( "Gd", isotopes ); // 30
+    G4Element* eAu = nistManager -> FindOrBuildElement( "Au", isotopes ); // 79
     G4Element* ePb = nistManager -> FindOrBuildElement( "Pb", isotopes ); // 82
 
     //======================================================
@@ -99,8 +101,7 @@ namespace grape
     nistManager -> FindOrBuildMaterial("G4_Pb");
     nistManager -> FindOrBuildMaterial("G4_Si");
     nistManager -> FindOrBuildMaterial("G4_Sn");
-    nistManager -> FindOrBuildMaterial("G4_TEFLON");
-    nistManager -> FindOrBuildMaterial("G4_KAPTON");
+
 
     // ALUMINUM 6061
     auto mAl6061 = new G4Material( "Aluminum6061", 2.6989*g/cm3, 9 );
@@ -137,7 +138,7 @@ namespace grape
        mG10 -> AddElement(  eCl,              8.0*perCent );
 
      //----------------------------------
-     // NEMA FR4 (from advanced examples)
+     // NEMA FR4 (from advanced examples) - used in vertical columns
      //----------------------------------
      auto mFR4 = new G4Material( "FR4", 1.850*g/cm3, 4 );
        mFR4 -> AddMaterial( mPCB_FiberGlass, 61.3*perCent );
@@ -156,6 +157,17 @@ namespace grape
        mPCB -> AddElement(  eFe,   1.0*perCent );
        mPCB -> AddElement(  eSn,   1.0*perCent );
        mPCB -> AddElement(  ePb,   1.0*perCent );
+
+     //----------------------------------
+     //! Vetical Baord 90% FR4 circuit board, 10% copper, gold, nickel
+     //! 10% arbitrary; density is a guess
+     //----------------------------------
+     auto mVCB = new G4Material( "VCB_Mat", 1.9*g/cm3, 4 );
+       mVCB -> AddMaterial( mFR4, 90.0*perCent );
+       mVCB -> AddElement(  eCu,   6.0*perCent );
+       mVCB -> AddElement(  eAu,   3.0*perCent );
+       mVCB -> AddElement(  eNi,   1.0*perCent );
+
 
      //----------------------------------
      // SiPM (Hamamatsu S13361-3050AE-04)
@@ -212,12 +224,20 @@ namespace grape
        mOpticalPad -> AddElement( eSi, 4 );
        mOpticalPad -> AddElement( eO,  3 );
 
-    //! Detectors Wrapping: Teflon and Kapton (1.025*mm thick)
-    nistManager -> FindOrBuildMaterial("G4_TEFLON");
-    nistManager -> FindOrBuildMaterial("G4_KAPTON");
+    //----------------------------------
+    //! Detectors Wrapping (1.025*mm thick)
+    //! Volumne (6 x (12.5 mm x 12.5 mm x 1.025 mm)) = 1302 mm
+    //! 4 Teflon : 1 Kapton
+    //! Kapton = 1.42 g/cm^3 ; Teflon = 2.2 g/cm^3 -> total = 2.005 g/cm^3
+    //----------------------------------
+    // mPCB_FiberGlass -> AddMaterial( nistManager->FindOrBuildMaterial( "G4_SILICON_DIOXIDE" ), 1 );
+    auto mDetectorWrap = new G4Material( "Reflective_Wrap", 2.005*g/cm3, 2 );
+      mDetectorWrap -> AddMaterial( nistManager -> FindOrBuildMaterial("G4_TEFLON"), 75.*perCent);
+      mDetectorWrap -> AddMaterial( nistManager -> FindOrBuildMaterial("G4_KAPTON"), 25.*perCent);
+    
 
-    //! Column Housing (3D-printed Nylon) Nylon-11 assumed
-    auto mNylon = nistManager -> FindOrBuildMaterial("G4_NYLON-11_RILSAN");
+    //! Column Housing (3D-printed Nylon-12) pre-defined Nylon-11-Rilsan used as substitute
+    nistManager -> FindOrBuildMaterial("G4_NYLON-11_RILSAN");
 
      //------------------------------------------------------
      // Scintillators
@@ -275,13 +295,13 @@ namespace grape
     auto mSn = G4Material::GetMaterial("G4_Sn");
     
     auto mNylon = G4Material::GetMaterial( "G4_NYLON-11_RILSAN" );
-    auto mPFTE = G4Material::GetMaterial( "G4_TEFLON" );
-    auto mKAPT = G4Material::GetMaterial( "G4_KAPTON" );
+    auto mDetectorWrap = G4Material::GetMaterial( "Reflective_Wrap" );
     auto mAl6061 = G4Material::GetMaterial( "Aluminum6061" );
+    auto mVCB = G4Material::GetMaterial( "VCB_Mat" );
     auto mPCB = G4Material::GetMaterial( "PCB_Mat" );
     auto mConnector = G4Material::GetMaterial( "ConnectorMaterial" );
     auto mSiPM = G4Material::GetMaterial( "SiPM_Mat" );
-    auto mPEEK = G4Material::GetMaterial( "PEEK_Mat" );
+    // auto mPEEK = G4Material::GetMaterial( "PEEK_Mat" );
     auto mOPad = G4Material::GetMaterial( "OpticalPad_Mat" );
     auto mODM = G4Material::GetMaterial( "ODM" );
 
@@ -292,6 +312,8 @@ namespace grape
     //======================================================
     // Volumes
     //======================================================
+
+
     //------------------------------------------------------
     // World
     //------------------------------------------------------
@@ -322,6 +344,7 @@ namespace grape
                   false,                // no boolean operation
                   0,                    // copy number
                   fCheckOverlaps);      // checking overlaps 
+    
     
     //------------------------------------------------------
     // Instrument
@@ -367,6 +390,7 @@ namespace grape
                   false,                // no boolean operation
                   0,                    // copy number
                   fCheckOverlaps);      // checking overlaps 
+    
 
     //----------------------------------
     // Base Shield - Lead 
@@ -1187,6 +1211,16 @@ namespace grape
                   0,                    // copy number
                   fCheckOverlaps);      // checking overlaps 
 
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  MIBP_Pos,             // its position
+                  MIBP_LV,              // its logical volume
+                  "MIB_Plate_PV",       // its name
+                  detColumn_Cal_LV,       // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps               
+
     //----------------------------------
     // Scintillator Case
     //----------------------------------
@@ -1204,8 +1238,8 @@ namespace grape
 
 
     // Hole
-    auto SCINT_Case_Hole_X = kSiPM_Xsize;
-    auto SCINT_Case_Hole_Y = kSiPM_Ysize;
+    auto SCINT_Case_Hole_X = kScint_Case_Hole_Xsize;
+    auto SCINT_Case_Hole_Y = kScint_Case_Hole_Ysize;
     auto SCINT_Case_Hole_Z = 2*kScint_Case_Zsize;
 
     auto SCINT_Case_Hole_S = new G4Box(
@@ -1399,6 +1433,192 @@ namespace grape
                    0,                    // copy number
                    fCheckOverlaps);      // checking overlaps 
 
+    //----------------------------------
+    // Side1 Vertical Board (VCB)
+    //----------------------------------
+    // Solid Volume
+    auto VCB_Side1_X = kVCB_Side1_Xsize;
+    auto VCB_Side1_Y = kVCB_Side1_Ysize;
+    auto VCB_Side1_Z = kVCB_Side1_Zsize;
+
+    auto VCB_Side1_S = new G4Box(
+                  "VCB_Side1_S",       // its name
+                  VCB_Side1_X/2,       // its X dimension 
+                  VCB_Side1_Y/2,       // its Y dimension
+                  VCB_Side1_Z/2);      // its Z dimension
+    
+    // Logical Volume
+    auto VCB_Side1_LV = new G4LogicalVolume(
+                  VCB_Side1_S,         // its solid
+                  mVCB,              // its material
+                  "VCB_Side1_LV");     // its name
+
+    // Pysical Volume
+    auto VCB_Side1_Xpos = 0.0*mm;
+    auto VCB_Side1_Ypos = 0.0*mm;
+    auto VCB_Side1_Zpos = SCINT_Case_Zpos+ SCINT_Case_Z/2 - VCB_Side1_Z/2 - kScint_Case_Thickness/2;
+    auto VCB_Side1_Pos = G4ThreeVector();
+
+    
+    VCB_Side1_Xpos = SCINT_Case_Bot_X/2 + VCB_Side1_X/2 - kVCB_Thickness/2;
+    VCB_Side1_Pos = G4ThreeVector( VCB_Side1_Xpos, VCB_Side1_Ypos, VCB_Side1_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  VCB_Side1_Pos,       // its position
+                  VCB_Side1_LV,        // its logical volume
+                  "VCB_Side1_PV",      // its name
+                  detColumn_C_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  VCB_Side1_Pos,       // its position
+                  VCB_Side1_LV,        // its logical volume
+                  "VCB_Side1_PV",      // its name
+                  detColumn_S_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  VCB_Side1_Pos,       // its position
+                  VCB_Side1_LV,        // its logical volume
+                  "VCB_Side1_PV",      // its name
+                  detColumn_Cal_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps     
+
+    VCB_Side1_Xpos = -SCINT_Case_Bot_X/2 - VCB_Side1_X/2 + kVCB_Thickness/2;
+    VCB_Side1_Pos = G4ThreeVector( VCB_Side1_Xpos, VCB_Side1_Ypos, VCB_Side1_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  VCB_Side1_Pos,       // its position
+                  VCB_Side1_LV,        // its logical volume
+                  "VCB_Side1_PV",      // its name
+                  detColumn_C_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps     
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  VCB_Side1_Pos,       // its position
+                  VCB_Side1_LV,        // its logical volume
+                  "VCB_Side1_PV",      // its name
+                  detColumn_S_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps       
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  VCB_Side1_Pos,       // its position
+                  VCB_Side1_LV,        // its logical volume
+                  "VCB_Side1_PV",      // its name
+                  detColumn_Cal_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps   
+
+    //----------------------------------
+    // Side2 Vertical Board (VCB)
+    //----------------------------------
+    // Solid Volume
+    auto VCB_Side2_X = kVCB_Side2_Xsize;
+    auto VCB_Side2_Y = kVCB_Side2_Ysize;
+    auto VCB_Side2_Z = kVCB_Side2_Zsize;
+
+    auto VCB_Side2_S = new G4Box(
+                  "VCB_Side2_S",       // its name
+                  VCB_Side2_X/2,       // its X dimension 
+                  VCB_Side2_Y/2,       // its Y dimension
+                  VCB_Side2_Z/2);      // its Z dimension
+    
+    // Logical Volume
+    auto VCB_Side2_LV = new G4LogicalVolume(
+                  VCB_Side2_S,         // its solid
+                  mVCB,              // its material
+                  "VCB_Side2_LV");     // its name
+
+    // Pysical Volume
+    auto VCB_Side2_Xpos = 0.0*mm;
+    auto VCB_Side2_Ypos = 0.0*mm;
+    auto VCB_Side2_Zpos = SCINT_Case_Zpos+ SCINT_Case_Z/2 - VCB_Side2_Z/2 - kScint_Case_Thickness/2;
+    auto VCB_Side2_Pos = G4ThreeVector();
+
+    VCB_Side2_Ypos = SCINT_Case_Bot_Y/2 + VCB_Side2_Y/2 - kVCB_Thickness/2;
+    VCB_Side2_Pos = G4ThreeVector( VCB_Side2_Xpos, VCB_Side2_Ypos, VCB_Side2_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  VCB_Side2_Pos,       // its position
+                  VCB_Side2_LV,        // its logical volume
+                  "VCB_Side2_PV",      // its name
+                  detColumn_C_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps
+    
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  VCB_Side2_Pos,       // its position
+                  VCB_Side2_LV,        // its logical volume
+                  "VCB_Side2_PV",      // its name
+                  detColumn_S_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  VCB_Side2_Pos,       // its position
+                  VCB_Side2_LV,        // its logical volume
+                  "VCB_Side2_PV",      // its name
+                  detColumn_Cal_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps
+
+    VCB_Side2_Ypos = -SCINT_Case_Bot_Y/2 - VCB_Side2_Y/2 + kVCB_Thickness/2;
+    VCB_Side2_Pos = G4ThreeVector( VCB_Side2_Xpos, VCB_Side2_Ypos, VCB_Side2_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  VCB_Side2_Pos,       // its position
+                  VCB_Side2_LV,        // its logical volume
+                  "VCB_Side2_PV",      // its name
+                  detColumn_C_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  VCB_Side2_Pos,       // its position
+                  VCB_Side2_LV,        // its logical volume
+                  "VCB_Side2_PV",      // its name
+                  detColumn_S_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  VCB_Side2_Pos,       // its position
+                  VCB_Side2_LV,        // its logical volume
+                  "VCB_Side2_PV",      // its name
+                  detColumn_Cal_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+
 
     //----------------------------------
     // Enclosure Top/Support Frame
@@ -1517,7 +1737,7 @@ namespace grape
     // G4cout << "--> Element Positions:" << G4endl;
     copyNum = 0;
     for (auto ele = 0; ele<kNumScint_Z; ele++) {
-      detElement_Zpos = SCINT_Case_Top_Zpos + SCINT_Case_Top_Z/2 - kScint_Case_Thickness/2 - ele * detElement_Z - detElement_Z/2;
+      detElement_Zpos = VCB_Side1_Zpos + kVCB_Side1_Zsize/2 - kScint_Case_Thickness/2 - ele * detElement_Z - detElement_Z/2;
 
       detElement_Pos = G4ThreeVector( detElement_Xpos, detElement_Ypos, detElement_Zpos );
 
@@ -1538,7 +1758,7 @@ namespace grape
 
     copyNum = 0;
     for (auto ele = 0; ele<kNumScint_Z; ele++) {
-      detElement_Zpos = SCINT_Case_Top_Zpos + SCINT_Case_Top_Z/2 - kScint_Case_Thickness/2 - ele * detElement_Z - detElement_Z/2;
+      detElement_Zpos = VCB_Side1_Zpos + kVCB_Side1_Zsize/2 - kScint_Case_Thickness/2 - ele * detElement_Z - detElement_Z/2;
 
       detElement_Pos = G4ThreeVector( detElement_Xpos, detElement_Ypos, detElement_Zpos );
 
@@ -1573,7 +1793,7 @@ namespace grape
 
      copyNum = 0;
      for (auto ele = 0; ele<kNumScint_Z; ele++) {
-       detElement_Zpos = SCINT_Case_Top_Zpos + SCINT_Case_Top_Z/2 - kScint_Case_Thickness/2 - ele * detElement_Z - detElement_Z/2;
+       detElement_Zpos = VCB_Side1_Zpos + kVCB_Side1_Zsize/2 - kScint_Case_Thickness/2 - ele * detElement_Z - detElement_Z/2;
 
        detElement_Pos = G4ThreeVector( detElement_Xpos, detElement_Ypos, detElement_Zpos );
 
@@ -1619,67 +1839,83 @@ namespace grape
      }
 
 
-//!    //----------------------------------
-//!    // Detector Element Wrapping 
-//!    //----------------------------------
-//!    // SOLID VOLUME
-//!    auto detWrap_X = kScint_Xsize;
-//!    auto detWrap_Y = kScint_Ysize;
-//!    auto detWrap_Z = kScint_Zsize;
-//!
-//!    G4VSolid* detWrap_S = new G4Box(
-//!                  "detWrap_S",         // its name
-//!                  detWrap_X/2,         // its X dimension
-//!                  detWrap_Y/2,         // its Y dimension
-//!                  detWrap_Z/2);        // its Z dimension
-//!
-//!    // Hole
-//!    auto detWrap_Hole_Rmin = kCal_Rmin;
-//!    auto detWrap_Hole_Rmax = kCal_Rmax;
-//!    auto detWrap_Hole_Z = kCal_Zsize;
-//!
-//!    auto detWrap_Hole_S = new G4Tubs(
-//!                  "detWrap_Hole_S",    // its name
-//!                  detWrap_Hole_Rmin,   // its minimum radius 
-//!                  detWrap_Hole_Rmax,   // its maximum radius
-//!                  detWrap_Hole_Z/2,    // its Z dimension
-//!                  0.*deg,               // its starting segment angle
-//!                  360.*deg);            // its ending segment angle
-//!
-//!    auto detWrap_Hole_Xpos = 0.0*mm;
-//!    auto detWrap_Hole_Ypos = 0.0*mm;
-//!    auto detWrap_Hole_Zpos = detWrap_Hole_Z/2 - detWrap_Z/2;
-//!    auto detWrap_Hole_pos = G4ThreeVector( detWrap_Hole_Xpos, detWrap_Hole_Ypos, detWrap_Hole_Zpos );
-//!    detWrap_S = new G4SubtractionSolid( 
-//!                  "detWrap_S",         // its name
-//!                  detWrap_S,           // starting solid
-//!                  detWrap_Hole_S,      // solid to be subtracted
-//!                  0,                    // its rotation
-//!                  detWrap_Hole_pos );  // its position
-//!
-//!
-//!    // LOGICAL VOLUME
-//!    auto detWrap_LV = new G4LogicalVolume(
-//!                  detWrap_S,           // its solid
-//!                  mODM,                 // its material
-//!                  "detWrap_LV");       // its name
-//!
-//!    // PHYSICAL VOLUME
-//!    auto detWrap_Xpos = 0.0*mm;
-//!    auto detWrap_Ypos = 0.0*mm;
-//!    auto detWrap_Zpos = detElement_Z/2 - detWrap_Z/2;
-//!    auto detWrap_Pos = G4ThreeVector( detWrap_Xpos, detWrap_Ypos, detWrap_Zpos );
-//!
-//!    new G4PVPlacement(
-//!                  0,                    // its rotation
-//!                  detWrap_Pos,         // its position
-//!                  detWrap_LV,          // its logical volume
-//!                  "detWrap_PV",        // its name
-//!                  detElement_Cal_LV,    // its mother  volume
-//!                  false,                // no boolean operation
-//!                  0,                    // copy number
-//!                  fCheckOverlaps);      // checking overlaps 
-//!
+      //----------------------------------
+      // Detector Element Wrapping 
+      //----------------------------------
+      // SOLID VOLUME
+      auto detWrap_X = kDetWrap_Xsize;
+      auto detWrap_Y = kDetWrap_Ysize;
+      auto detWrap_Z = kDetWrap_Zsize;
+  
+      G4VSolid* detWrap_S = new G4Box(
+                    "detWrap_S",         // its name
+                    detWrap_X/2,         // its X dimension
+                    detWrap_Y/2,         // its Y dimension
+                    detWrap_Z/2);        // its Z dimension
+  
+      // Hole
+      auto detWrap_Hole_X = kDetWrap_Hole_Xsize;
+      auto detWrap_Hole_Y = kDetWrap_Hole_Ysize;
+      auto detWrap_Hole_Z = kDetWrap_Hole_Zsize;
+  
+      auto detWrap_Hole_S = new G4Box(
+                    "detWrap_S",         // its name
+                    detWrap_Hole_X/2,         // its X dimension
+                    detWrap_Hole_Y/2,         // its Y dimension
+                    detWrap_Hole_Z/2);        // its Z dimension
+  
+      auto detWrap_Hole_Xpos = 0.0*mm;
+      auto detWrap_Hole_Ypos = 0.0*mm;
+      auto detWrap_Hole_Zpos = - detWrap_Hole_Z/2 + detWrap_Z/2  - kDetWrap_Thickness;
+      auto detWrap_Hole_pos = G4ThreeVector( detWrap_Hole_Xpos, detWrap_Hole_Ypos, detWrap_Hole_Zpos );
+      detWrap_S = new G4SubtractionSolid( 
+                    "detWrap_S",         // its name
+                    detWrap_S,           // starting solid
+                    detWrap_Hole_S,      // solid to be subtracted
+                    0,                    // its rotation
+                    detWrap_Hole_pos );  // its position
+  
+  
+      // LOGICAL VOLUME
+      auto detWrap_LV = new G4LogicalVolume(
+                    detWrap_S,           // its solid
+                    mDetectorWrap,                 // its material
+                    "detWrap_LV");       // its name
+  
+      // PHYSICAL VOLUME
+      auto detWrap_Xpos = 0.0*mm;
+      auto detWrap_Ypos = 0.0*mm;
+      auto detWrap_Zpos = detElement_Z/2 - detWrap_Z/2 + kDetWrap_Thickness;
+      auto detWrap_Pos = G4ThreeVector( detWrap_Xpos, detWrap_Ypos, detWrap_Zpos );
+  
+      new G4PVPlacement(
+                    0,                    // its rotation
+                    detWrap_Pos,         // its position
+                    detWrap_LV,          // its logical volume
+                    "detWrap_PV",        // its name
+                    detElement_C_LV,    // its mother  volume
+                    false,                // no boolean operation
+                    0,                    // copy number
+                    fCheckOverlaps);      // checking overlaps 
+      new G4PVPlacement(
+                    0,                    // its rotation
+                    detWrap_Pos,         // its position
+                    detWrap_LV,          // its logical volume
+                    "detWrap_PV",        // its name
+                    detElement_S_LV,    // its mother  volume
+                    false,                // no boolean operation
+                    0,                    // copy number
+                    fCheckOverlaps);      // checking overlaps 
+      new G4PVPlacement(
+                    0,                    // its rotation
+                    detWrap_Pos,         // its position
+                    detWrap_LV,          // its logical volume
+                    "detWrap_PV",        // its name
+                    detElement_Cal_LV,    // its mother  volume
+                    false,                // no boolean operation
+                    0,                    // copy number
+                    fCheckOverlaps);      // checking overlaps 
+  
 
 
     //----------------------------------
@@ -2031,11 +2267,29 @@ namespace grape
     detColumn_C_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
     detColumn_S_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
     detColumn_Cal_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );    
-    SCINT_Case_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
-    SCINT_Case_Top_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
-    SCINT_Case_Bot_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+    // SCINT_Case_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+    // SCINT_Case_Top_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+    // SCINT_Case_Bot_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
     detElement_C_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
     detElement_S_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+    detElement_Cal_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
+
+   auto check_VisAtt = new G4VisAttributes( violet );
+  //  world_LV ->        SetVisAttributes( check_VisAtt );
+  //  module_LV ->       SetVisAttributes( check_VisAtt );
+  //  detColumn_C_LV ->  SetVisAttributes( check_VisAtt );
+  //  detColumn_S_LV ->  SetVisAttributes( check_VisAtt );
+  //  detColumn_Cal_LV ->SetVisAttributes( check_VisAtt );
+   SCINT_Case_LV ->   SetVisAttributes( check_VisAtt );
+   SCINT_Case_Top_LV->SetVisAttributes( check_VisAtt );
+   SCINT_Case_Bot_LV->SetVisAttributes( check_VisAtt );
+  //  detElement_C_LV -> SetVisAttributes( check_VisAtt );
+  //  detElement_S_LV -> SetVisAttributes( check_VisAtt );
+  //  detElement_Cal_LV -> SetVisAttributes( check_VisAtt );
+
+  auto wrap_VisAtt = new G4VisAttributes( orange );
+  wrap_VisAtt -> SetVisibility( true );
+  detWrap_LV -> SetVisAttributes( wrap_VisAtt );
 
     auto metal_VisAtt = new G4VisAttributes( G4Color::Gray() );
     metal_VisAtt -> SetVisibility( true );
@@ -2052,6 +2306,8 @@ namespace grape
     APB_LV -> SetVisAttributes( pc_VisAtt );
     MIB_LV -> SetVisAttributes( pc_VisAtt );
     SiPM_PCB_LV -> SetVisAttributes( pc_VisAtt );
+    VCB_Side2_LV -> SetVisAttributes( pc_VisAtt );
+    VCB_Side1_LV -> SetVisAttributes( pc_VisAtt );
 
     auto con_VisAtt = new G4VisAttributes( yellow );
     APB_Con_LV -> SetVisAttributes( con_VisAtt );
@@ -2059,7 +2315,8 @@ namespace grape
     auto pmt_VisAtt = new G4VisAttributes( G4Color::White() );
     pmt_VisAtt -> SetVisibility( true );
     SiPM_LV -> SetVisAttributes( pmt_VisAtt );
-    OPad_LV -> SetVisAttributes( pmt_VisAtt );
+ 
+  
 
     auto scintC_VisAtt = new G4VisAttributes( blue );
     scintC_VisAtt -> SetVisibility(true);
@@ -2072,7 +2329,7 @@ namespace grape
     // scintS_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
 
      auto opad_VisAtt = new G4VisAttributes( blue_green );
-     opad_VisAtt -> SetVisibility( false );
+     opad_VisAtt -> SetVisibility( true );
      OPad_LV -> SetVisAttributes( opad_VisAtt );
 
      auto cal_VisAtt = new G4VisAttributes( yellow_orange  );
@@ -2085,6 +2342,7 @@ namespace grape
      calHouse_LV -> SetVisAttributes(calHouse_VisAtt);
      // calHouse_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
 
+    
 
 
     //======================================================
@@ -2235,8 +2493,16 @@ namespace grape
 	G4cout << "           dX: kSHPB_Side2_Xsize = " << kSHPB_Side2_Xsize << " mm" << G4endl;
 	G4cout << "           dY: kSHPB_Side2_Ysize = " << kSHPB_Side2_Ysize << " mm" << G4endl;
 	G4cout << "           dZ: kSHPB_Side2_Zsize = " << kSHPB_Side2_Zsize << " mm" << G4endl;
-	
-	
+	G4cout << "*********************************************************" << G4endl;
+	G4cout << "Vertical Board Side1 Dimensions: " << G4endl;
+	G4cout << "           dX: kVCB_Side1_Xsize = " << kVCB_Side1_Xsize << " mm" << G4endl;
+	G4cout << "           dY: kVCB_Side1_Ysize = " << kVCB_Side1_Ysize << " mm" << G4endl;
+	G4cout << "           dZ: kVCB_Side1_Zsize = " << kVCB_Side1_Zsize << " mm" << G4endl;	
+	G4cout << "*********************************************************" << G4endl;
+	G4cout << "Vertical Board Side2 Dimensions: " << G4endl;
+	G4cout << "           dX: kVCB_Side2_Xsize = " << kVCB_Side2_Xsize << " mm" << G4endl;
+	G4cout << "           dY: kVCB_Side2_Ysize = " << kVCB_Side2_Ysize << " mm" << G4endl;
+	G4cout << "           dZ: kVCB_Side2_Zsize = " << kVCB_Side2_Zsize << " mm" << G4endl;	
 	
 	
 				

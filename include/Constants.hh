@@ -43,7 +43,9 @@ namespace grape
 
   constexpr auto kScint_Xpitch = 21.1*mm;
   constexpr auto kScint_Ypitch = 21.1*mm;
-  constexpr auto kScint_Zpitch = 17.5*mm;
+  constexpr auto kScint_Zpitch = 21.1*mm; //! based on avg measurements
+  // constexpr auto kScint_Zpitch = 17.5*mm;
+
 
   constexpr auto kNumScint_X = 7;
   constexpr auto kNumScint_Y = 7;
@@ -75,31 +77,32 @@ namespace grape
   constexpr auto kSiPM_PCB_Ysize = kSiPM_Xsize;
   constexpr auto kSiPM_PCB_Zsize = 1.57*mm;
 
-  //! Vertical Circuit Boards (VCB)
-  constexpr auto kVCB_Thickness = 0.7874*mm;
-
-  constexpr auto kVCB_XYsize = 14.224*mm;
-  constexpr auto kVCB_Zsize = 110.998*mm;
 
   //--------------------------------------------------------
   // Detector Elements
   //--------------------------------------------------------
+  //! Individual Det Assembly
+  constexpr auto kDetAssembly_Zsize = kScint_Zsize + kOpticalPad_Zsize + kSiPM_Zsize + kSiPM_PCB_Zsize;
+  
   //! Scintillator wrap  (adds ~2.05 mm in xyz)
   constexpr auto kDetWrap_Thickness = 1.025*mm;
 
-  // constexpr auto kDetWrap_Xsize = kSiPM_Xsize + 2*kDetWrap_Thickness;
-  // constexpr auto kDetWrap_Ysize = kSiPM_Ysize + 2*kDetWrap_Thickness;
-  // constexpr auto kDetWrap_Zsize = kDetAssembly_Zsize + 2*kDetWrap_Thickness;
+  constexpr auto kDetWrap_Xsize = kSiPM_Xsize + 2*kDetWrap_Thickness;
+  constexpr auto kDetWrap_Ysize = kSiPM_Ysize + 2*kDetWrap_Thickness;
+  constexpr auto kDetWrap_Zsize = kDetAssembly_Zsize + 2*kDetWrap_Thickness;
 
-  //! Individual Det Assembly
-  constexpr auto kDetAssembly_Zsize = kScint_Zsize + kOpticalPad_Zsize + kSiPM_Zsize + kSiPM_PCB_Zsize + 2*kDetWrap_Thickness;
+  constexpr auto kDetWrap_Hole_Xsize = kSiPM_Xsize;
+  constexpr auto kDetWrap_Hole_Ysize = kSiPM_Ysize;
+  constexpr auto kDetWrap_Hole_Zsize = kDetAssembly_Zsize;
+
+  constexpr auto kWrappedDetAssembly_Zsize = kScint_Zsize + kOpticalPad_Zsize + kSiPM_Zsize + kSiPM_PCB_Zsize + 2*kDetWrap_Thickness;
 
   // SiPM Gap (4.95 mm)
-  constexpr auto kDet_Gap = ( kVCB_Zsize - 
-                  5 * kDetAssembly_Zsize ) / 5; //! Where does the 107 come from?
+  constexpr auto kDet_Gap = ( 110.998*mm - 
+                  (5 * kWrappedDetAssembly_Zsize) ) / 5; //! Where does the 107 come from?
 
   constexpr auto kDetElement_Xsize = kSiPM_Xsize;
-  constexpr auto kDetElement_Ysize = kSiPM_Xsize;
+  constexpr auto kDetElement_Ysize = kSiPM_Ysize;
   constexpr auto kDetElement_Zsize = 
                   kScint_Zsize +
                   kOpticalPad_Zsize +
@@ -107,33 +110,50 @@ namespace grape
                   kSiPM_PCB_Zsize +
                   kDet_Gap;
 
-  
+  //! Vertical Circuit Boards (VCB)
+  constexpr auto kVCB_Thickness = 0.7874*mm;
+
+  //   constexpr auto kVCB_XYsize = 14.224*mm;
+  constexpr auto kfullVCB_Zsize = 110.998*mm;
+  constexpr auto kVCB_Zsize = kfullVCB_Zsize - (kfullVCB_Zsize - (kNumScint_Z *kScint_Zpitch));
+  constexpr auto kVCB_Side1_Xsize = kVCB_Thickness;
+  constexpr auto kVCB_Side1_Ysize = kSiPM_Ysize;
+  constexpr auto kVCB_Side1_Zsize = kVCB_Zsize;
+  // constexpr auto kVCB_Side1_Zsize = kDetElement_Zsize * kNumScint_Z;
+
+  constexpr auto kVCB_Side2_Xsize = kSiPM_Xsize;
+  constexpr auto kVCB_Side2_Ysize = kVCB_Thickness;
+  constexpr auto kVCB_Side2_Zsize = kVCB_Side1_Zsize;   
+
+
   // Detector Housing (115*mm assembled height without pins)
   constexpr auto kScint_Case_Thickness = 2.0*mm;
 
-  constexpr auto kScint_Case_Top_Xsize = kSiPM_Xsize + kScint_Case_Thickness;
-  constexpr auto kScint_Case_Top_Ysize = kSiPM_Ysize + kScint_Case_Thickness;
-  constexpr auto kScint_Case_Top_Zsize = 10.0*mm;
+  constexpr auto kScint_Case_Top_Xsize = kSiPM_Xsize + 2*kDetWrap_Thickness + kScint_Case_Thickness + 2*kVCB_Thickness;
+  constexpr auto kScint_Case_Top_Ysize = kSiPM_Ysize + 2*kDetWrap_Thickness + kScint_Case_Thickness + 2*kVCB_Thickness;
+  constexpr auto kScint_Case_Top_Zsize = 7.20*mm;
 
-  constexpr auto kScint_Case_Bot_Xsize = kSiPM_Xsize + kScint_Case_Thickness;
-  constexpr auto kScint_Case_Bot_Ysize = kSiPM_Ysize + kScint_Case_Thickness;
-  constexpr auto kScint_Case_Bot_Zsize = 8.0*mm;
+  constexpr auto kScint_Case_Bot_Xsize = kSiPM_Xsize + 2*kDetWrap_Thickness + kScint_Case_Thickness + 2*kVCB_Thickness;
+  constexpr auto kScint_Case_Bot_Ysize = kSiPM_Ysize + 2*kDetWrap_Thickness + kScint_Case_Thickness + 2*kVCB_Thickness;
+  constexpr auto kScint_Case_Bot_Zsize = 8.20*mm;
 
-  constexpr auto kScint_Case_Xsize = kSiPM_Xsize + 2*kScint_Case_Thickness;
-  constexpr auto kScint_Case_Ysize = kSiPM_Ysize + 2*kScint_Case_Thickness;
-  // constexpr auto kScint_Case_Zsize = 107*mm;
-  constexpr auto kScint_Case_Zsize = 
-                  kDetElement_Zsize * kNumScint_Z +
-                  kScint_Case_Thickness -
-                  kScint_Case_Top_Zsize - 
-                  kScint_Case_Bot_Zsize;
+  constexpr auto kScint_Case_Xsize = kSiPM_Xsize + 2*kDetWrap_Thickness + 2*kScint_Case_Thickness + 2*kVCB_Thickness;
+  constexpr auto kScint_Case_Ysize = kSiPM_Ysize + 2*kDetWrap_Thickness + 2*kScint_Case_Thickness + 2*kVCB_Thickness;
+  constexpr auto kScint_Case_Zsize = 99.60*mm;
+  // constexpr auto kScint_Case_Zsize = 
+                  // kDetElement_Zsize * kNumScint_Z +
+                  // 2*kScint_Case_Thickness -
+                  // kScint_Case_Top_Zsize - 
+                  // kScint_Case_Bot_Zsize;
 
-
-
+  constexpr auto kScint_Case_Hole_Xsize = kSiPM_Xsize + 2*kDetWrap_Thickness + 2*kVCB_Thickness;
+  constexpr auto kScint_Case_Hole_Ysize = kSiPM_Ysize + 2*kDetWrap_Thickness + 2*kVCB_Thickness;
+  constexpr auto kScint_Case_Hole_Zsize = 2*kScint_Case_Zsize + 2*kScint_Case_Thickness;
 
   //--------------------------------------------------------
   // Electronics
   //--------------------------------------------------------
+
 
 
   // Module Interface Board (MIB)
