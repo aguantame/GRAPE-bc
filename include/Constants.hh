@@ -43,7 +43,7 @@ namespace grape
 
   constexpr auto kScint_Xpitch = 21.1*mm;
   constexpr auto kScint_Ypitch = 21.1*mm;
-  constexpr auto kScint_Zpitch = 21.1*mm; //! based on avg measurements
+  constexpr auto kScint_Zpitch = 21.84*mm; //! based on avg measurements
   // constexpr auto kScint_Zpitch = 17.5*mm;
 
 
@@ -97,9 +97,13 @@ namespace grape
 
   constexpr auto kWrappedDetAssembly_Zsize = kScint_Zsize + kOpticalPad_Zsize + kSiPM_Zsize + kSiPM_PCB_Zsize + 2*kDetWrap_Thickness;
 
-  // SiPM Gap (4.95 mm)
-  constexpr auto kDet_Gap = ( 110.998*mm - 
-                  (5 * kWrappedDetAssembly_Zsize) ) / 5; //! Where does the 107 come from?
+  //! SiPM Gap (5.07 mm without wrap based on drawings)
+  constexpr auto kDet_Gap = 21.84 -
+                           (kScint_Zsize + 
+                            kOpticalPad_Zsize + 
+                            kSiPM_Zsize + 
+                            kSiPM_PCB_Zsize + 
+                            kDetWrap_Thickness); //! Where does the 107 come from?
 
   constexpr auto kDetElement_Xsize = kSiPM_Xsize;
   constexpr auto kDetElement_Ysize = kSiPM_Ysize;
@@ -115,13 +119,14 @@ namespace grape
 
   //   constexpr auto kVCB_XYsize = 14.224*mm;
   constexpr auto kfullVCB_Zsize = 110.998*mm;
-  constexpr auto kVCB_Zsize = kfullVCB_Zsize - (kfullVCB_Zsize - (kNumScint_Z *kScint_Zpitch));
+  constexpr auto kVCB_Zsize = 110.998*mm;
+  // constexpr auto kVCB_Zsize = kfullVCB_Zsize - (kfullVCB_Zsize - (kNumScint_Z *kScint_Zpitch));
   constexpr auto kVCB_Side1_Xsize = kVCB_Thickness;
-  constexpr auto kVCB_Side1_Ysize = kSiPM_Ysize;
+  constexpr auto kVCB_Side1_Ysize = kSiPM_Ysize + 2*kDetWrap_Thickness;
   constexpr auto kVCB_Side1_Zsize = kVCB_Zsize;
   // constexpr auto kVCB_Side1_Zsize = kDetElement_Zsize * kNumScint_Z;
 
-  constexpr auto kVCB_Side2_Xsize = kSiPM_Xsize;
+  constexpr auto kVCB_Side2_Xsize = kSiPM_Xsize + 2*kDetWrap_Thickness;
   constexpr auto kVCB_Side2_Ysize = kVCB_Thickness;
   constexpr auto kVCB_Side2_Zsize = kVCB_Side1_Zsize;   
 
@@ -129,12 +134,12 @@ namespace grape
   // Detector Housing (115*mm assembled height without pins)
   constexpr auto kScint_Case_Thickness = 2.0*mm;
 
-  constexpr auto kScint_Case_Top_Xsize = kSiPM_Xsize + 2*kDetWrap_Thickness + kScint_Case_Thickness + 2*kVCB_Thickness;
-  constexpr auto kScint_Case_Top_Ysize = kSiPM_Ysize + 2*kDetWrap_Thickness + kScint_Case_Thickness + 2*kVCB_Thickness;
+  constexpr auto kScint_Case_Top_Xsize = kSiPM_Xsize + 2*kDetWrap_Thickness + 2*kScint_Case_Thickness + 2*kVCB_Thickness;
+  constexpr auto kScint_Case_Top_Ysize = kSiPM_Ysize + 2*kDetWrap_Thickness + 2*kScint_Case_Thickness + 2*kVCB_Thickness;
   constexpr auto kScint_Case_Top_Zsize = 7.20*mm;
 
-  constexpr auto kScint_Case_Bot_Xsize = kSiPM_Xsize + 2*kDetWrap_Thickness + kScint_Case_Thickness + 2*kVCB_Thickness;
-  constexpr auto kScint_Case_Bot_Ysize = kSiPM_Ysize + 2*kDetWrap_Thickness + kScint_Case_Thickness + 2*kVCB_Thickness;
+  constexpr auto kScint_Case_Bot_Xsize = kSiPM_Xsize + 2*kDetWrap_Thickness + 2*kScint_Case_Thickness + 2*kVCB_Thickness;
+  constexpr auto kScint_Case_Bot_Ysize = kSiPM_Ysize + 2*kDetWrap_Thickness + 2*kScint_Case_Thickness + 2*kVCB_Thickness;
   constexpr auto kScint_Case_Bot_Zsize = 8.20*mm;
 
   constexpr auto kScint_Case_Xsize = kSiPM_Xsize + 2*kDetWrap_Thickness + 2*kScint_Case_Thickness + 2*kVCB_Thickness;

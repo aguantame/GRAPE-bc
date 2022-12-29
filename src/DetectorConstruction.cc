@@ -1456,11 +1456,12 @@ namespace grape
     // Pysical Volume
     auto VCB_Side1_Xpos = 0.0*mm;
     auto VCB_Side1_Ypos = 0.0*mm;
-    auto VCB_Side1_Zpos = SCINT_Case_Zpos+ SCINT_Case_Z/2 - VCB_Side1_Z/2 - kScint_Case_Thickness/2;
+    // auto VCB_Side2_Zpos = SCINT_Case_Zpos/2 + SCINT_Case_Z/2 - VCB_Side2_Z/2 - kScint_Case_Thickness/2;
+    auto VCB_Side1_Zpos = kScint_Case_Thickness/2;
     auto VCB_Side1_Pos = G4ThreeVector();
 
     
-    VCB_Side1_Xpos = SCINT_Case_Bot_X/2 + VCB_Side1_X/2 - kVCB_Thickness/2;
+    VCB_Side1_Xpos = VCB_Side1_Y/2 + kVCB_Thickness/2;
     VCB_Side1_Pos = G4ThreeVector( VCB_Side1_Xpos, VCB_Side1_Ypos, VCB_Side1_Zpos );
 
     new G4PVPlacement(
@@ -1493,7 +1494,7 @@ namespace grape
                   0,                    // copy number
                   fCheckOverlaps);      // checking overlaps     
 
-    VCB_Side1_Xpos = -SCINT_Case_Bot_X/2 - VCB_Side1_X/2 + kVCB_Thickness/2;
+    VCB_Side1_Xpos = -VCB_Side1_Y/2 - kVCB_Thickness/2;
     VCB_Side1_Pos = G4ThreeVector( VCB_Side1_Xpos, VCB_Side1_Ypos, VCB_Side1_Zpos );
 
     new G4PVPlacement(
@@ -1549,10 +1550,10 @@ namespace grape
     // Pysical Volume
     auto VCB_Side2_Xpos = 0.0*mm;
     auto VCB_Side2_Ypos = 0.0*mm;
-    auto VCB_Side2_Zpos = SCINT_Case_Zpos+ SCINT_Case_Z/2 - VCB_Side2_Z/2 - kScint_Case_Thickness/2;
+    auto VCB_Side2_Zpos = kScint_Case_Thickness/2;
     auto VCB_Side2_Pos = G4ThreeVector();
 
-    VCB_Side2_Ypos = SCINT_Case_Bot_Y/2 + VCB_Side2_Y/2 - kVCB_Thickness/2;
+    VCB_Side2_Ypos = VCB_Side2_X/2 + kVCB_Thickness/2;
     VCB_Side2_Pos = G4ThreeVector( VCB_Side2_Xpos, VCB_Side2_Ypos, VCB_Side2_Zpos );
 
     new G4PVPlacement(
@@ -1585,7 +1586,7 @@ namespace grape
                   0,                    // copy number
                   fCheckOverlaps);      // checking overlaps
 
-    VCB_Side2_Ypos = -SCINT_Case_Bot_Y/2 - VCB_Side2_Y/2 + kVCB_Thickness/2;
+    VCB_Side2_Ypos = -VCB_Side2_X/2 - kVCB_Thickness/2;
     VCB_Side2_Pos = G4ThreeVector( VCB_Side2_Xpos, VCB_Side2_Ypos, VCB_Side2_Zpos );
 
     new G4PVPlacement(
