@@ -132,29 +132,25 @@ namespace grape
 
 
   // Detector Housing (115*mm assembled height without pins)
-  constexpr auto kScint_Case_Thickness = 2.0*mm;
+  constexpr auto kScint_Case_Thickness = 1.91*mm;
 
-  constexpr auto kScint_Case_Top_Xsize = kSiPM_Xsize + 2*kDetWrap_Thickness + 2*kScint_Case_Thickness + 2*kVCB_Thickness;
-  constexpr auto kScint_Case_Top_Ysize = kSiPM_Ysize + 2*kDetWrap_Thickness + 2*kScint_Case_Thickness + 2*kVCB_Thickness;
+  constexpr auto kScint_Case_Top_Xsize = 20.8*mm;
+  constexpr auto kScint_Case_Top_Ysize = 20.8*mm;
   constexpr auto kScint_Case_Top_Zsize = 7.20*mm;
 
-  constexpr auto kScint_Case_Bot_Xsize = kSiPM_Xsize + 2*kDetWrap_Thickness + 2*kScint_Case_Thickness + 2*kVCB_Thickness;
-  constexpr auto kScint_Case_Bot_Ysize = kSiPM_Ysize + 2*kDetWrap_Thickness + 2*kScint_Case_Thickness + 2*kVCB_Thickness;
+  constexpr auto kScint_Case_Bot_Xsize = 20.8*mm;
+  constexpr auto kScint_Case_Bot_Ysize = 20.8*mm;
   constexpr auto kScint_Case_Bot_Zsize = 8.20*mm;
 
-  constexpr auto kScint_Case_Xsize = kSiPM_Xsize + 2*kDetWrap_Thickness + 2*kScint_Case_Thickness + 2*kVCB_Thickness;
-  constexpr auto kScint_Case_Ysize = kSiPM_Ysize + 2*kDetWrap_Thickness + 2*kScint_Case_Thickness + 2*kVCB_Thickness;
+  constexpr auto kScint_Case_Xsize = 22.62*mm;
+  constexpr auto kScint_Case_Ysize = 22.62*mm;
   constexpr auto kScint_Case_Zsize = 99.60*mm;
-  // constexpr auto kScint_Case_Zsize = 
-                  // kDetElement_Zsize * kNumScint_Z +
-                  // 2*kScint_Case_Thickness -
-                  // kScint_Case_Top_Zsize - 
-                  // kScint_Case_Bot_Zsize;
 
-  constexpr auto kScint_Case_Hole_Xsize = kSiPM_Xsize + 2*kDetWrap_Thickness + 2*kVCB_Thickness;
-  constexpr auto kScint_Case_Hole_Ysize = kSiPM_Ysize + 2*kDetWrap_Thickness + 2*kVCB_Thickness;
+  constexpr auto kScint_Case_Hole_Xsize = kScint_Case_Xsize - 2*kScint_Case_Thickness;
+  constexpr auto kScint_Case_Hole_Ysize = kScint_Case_Ysize - 2*kScint_Case_Thickness;
   constexpr auto kScint_Case_Hole_Zsize = 2*kScint_Case_Zsize + 2*kScint_Case_Thickness;
 
+  
   //--------------------------------------------------------
   // Electronics
   //--------------------------------------------------------
