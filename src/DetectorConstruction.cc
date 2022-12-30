@@ -1620,6 +1620,83 @@ namespace grape
                   fCheckOverlaps);      // checking overlaps 
 
 
+    //----------------------------------
+    // Column O-ring
+    //----------------------------------
+    // Solid Volume
+    auto ORing_X = kORing_Xsize;
+    auto ORing_Y = kORing_Ysize;
+    auto ORing_Z = kORing_Zsize;
+
+    G4VSolid* ORing_S;
+    ORing_S = new G4Box(
+                  "ORing_S",       // its name
+                  ORing_X/2,       // its X dimension
+                  ORing_Y/2,       // its Y dimension
+                  ORing_Z/2);      // its Z dimension
+
+
+    // Hole
+    auto ORing_Hole_X = kORing_Hole_Xsize;
+    auto ORing_Hole_Y = kORing_Hole_Ysize;
+    auto ORing_Hole_Z = 2*kORing_Zsize;
+
+    auto ORing_Hole_S = new G4Box(
+                  "ORing_Hole_S",  // its name
+                  ORing_Hole_X/2,  // its X dimension
+                  ORing_Hole_Y/2,  // its Y dimension
+                  ORing_Hole_Z/2); // its Z dimension
+
+    auto ORing_Hole_pos = G4ThreeVector( 0., 0., 0. );
+    ORing_S = new G4SubtractionSolid( 
+                  "ORing_Hole_S",  // its name
+                  ORing_S,         // starting solid
+                  ORing_Hole_S,    // solid to be subtracted
+                  0,                    // its rotation
+                  ORing_Hole_pos );// its position
+
+    // Logical Volume
+    auto ORing_LV = new G4LogicalVolume(
+                  ORing_S,         // its solid
+                  mNylon,               //! its material
+                  "ORing_LV");     // its name
+
+    // Physical Volume
+    auto ORing_Xpos = 0.0*mm;
+    auto ORing_Ypos = 0.0*mm;
+    auto ORing_Zpos = 0.0*mm;
+    auto ORing_Pos = G4ThreeVector( ORing_Xpos, ORing_Ypos, ORing_Zpos );
+   
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  ORing_Pos,       // its position
+                  ORing_LV,        // its logical volume
+                  "ORing_PV",      // its name
+                  detColumn_C_LV,       // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  ORing_Pos,       // its position
+                  ORing_LV,        // its logical volume
+                  "ORing_PV",      // its name
+                  detColumn_S_LV,       // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+     new G4PVPlacement(
+                   0,                    // its rotation
+                   ORing_Pos,       // its position
+                   ORing_LV,        // its logical volume
+                   "ORing_PV",      // its name
+                   detColumn_Cal_LV,       // its mother  volume
+                   false,                // no boolean operation
+                   0,                    // copy number
+                   fCheckOverlaps);      // checking overlaps 
+
 
     //----------------------------------
     // Enclosure Top/Support Frame
@@ -2339,8 +2416,9 @@ namespace grape
      // scintS_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
 
      auto calHouse_VisAtt = new G4VisAttributes( G4Color::Black()  );
-     calHouse_VisAtt -> SetVisibility(false);
+     calHouse_VisAtt -> SetVisibility(true);
      calHouse_LV -> SetVisAttributes(calHouse_VisAtt);
+     ORing_LV -> SetVisAttributes(calHouse_VisAtt);
      // calHouse_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
 
     

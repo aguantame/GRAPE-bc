@@ -150,7 +150,19 @@ namespace grape
   constexpr auto kScint_Case_Hole_Ysize = kScint_Case_Ysize - 2*kScint_Case_Thickness;
   constexpr auto kScint_Case_Hole_Zsize = 2*kScint_Case_Zsize + 2*kScint_Case_Thickness;
 
-  
+// O-Ring (rectangular shape assumed)
+  constexpr auto kORing_Thickness = 1.5*mm;
+
+  constexpr auto kORing_Xsize = kScint_Case_Hole_Xsize;
+  constexpr auto kORing_Ysize = kScint_Case_Hole_Xsize;
+  constexpr auto kORing_Zsize = kORing_Thickness;
+
+  constexpr auto kORing_Hole_Xsize = kSiPM_Xsize + 2*kDetWrap_Thickness + 2*kVCB_Thickness;
+  constexpr auto kORing_Hole_Ysize = kSiPM_Ysize + 2*kDetWrap_Thickness + 2*kVCB_Thickness;
+  constexpr auto kORing_Hole_Zsize = 2*kORing_Zsize + 2*kORing_Thickness;
+
+
+
   //--------------------------------------------------------
   // Electronics
   //--------------------------------------------------------
