@@ -9,6 +9,7 @@
 *.pdf
 *.txt
 .DS_Store
+DetConstructionFigs/*
 
 
 # VSCode
