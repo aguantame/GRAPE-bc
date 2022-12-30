@@ -66,7 +66,7 @@ namespace grape
     //======================================================
     auto isotopes = true;
     G4Element* eH  = nistManager -> FindOrBuildElement( "H" , isotopes ); // 1
-    G4Element* eBe = nistManager -> FindOrBuildElement( "Be", isotopes ); // 4
+    // G4Element* eBe = nistManager -> FindOrBuildElement( "Be", isotopes ); // 4
     G4Element* eC  = nistManager -> FindOrBuildElement( "C" , isotopes ); // 6
     G4Element* eO  = nistManager -> FindOrBuildElement( "O" , isotopes ); // 8
     G4Element* eF  = nistManager -> FindOrBuildElement( "F" , isotopes ); // 9
@@ -230,11 +230,13 @@ namespace grape
     //! 4 Teflon : 1 Kapton
     //! Kapton = 1.42 g/cm^3 ; Teflon = 2.2 g/cm^3 -> total = 2.005 g/cm^3
     //----------------------------------
-    // mPCB_FiberGlass -> AddMaterial( nistManager->FindOrBuildMaterial( "G4_SILICON_DIOXIDE" ), 1 );
     auto mDetectorWrap = new G4Material( "Reflective_Wrap", 2.005*g/cm3, 2 );
       mDetectorWrap -> AddMaterial( nistManager -> FindOrBuildMaterial("G4_TEFLON"), 75.*perCent);
       mDetectorWrap -> AddMaterial( nistManager -> FindOrBuildMaterial("G4_KAPTON"), 25.*perCent);
     
+    //! O-Ring butyl-rubber used as placeholder for Buna-N (C7H9N1) 
+    nistManager -> FindOrBuildMaterial("G4_RUBBER_BUTYL");
+  
 
     //! Column Housing (3D-printed Nylon-12) pre-defined Nylon-11-Rilsan used as substitute
     nistManager -> FindOrBuildMaterial("G4_NYLON-11_RILSAN");
@@ -301,9 +303,9 @@ namespace grape
     auto mPCB = G4Material::GetMaterial( "PCB_Mat" );
     auto mConnector = G4Material::GetMaterial( "ConnectorMaterial" );
     auto mSiPM = G4Material::GetMaterial( "SiPM_Mat" );
-    // auto mPEEK = G4Material::GetMaterial( "PEEK_Mat" );
     auto mOPad = G4Material::GetMaterial( "OpticalPad_Mat" );
     auto mODM = G4Material::GetMaterial( "ODM" );
+    auto mORing = G4Material::GetMaterial( "G4_RUBBER_BUTYL" );
 
     auto mScintC = G4Material::GetMaterial("GAGG");
     auto mScintS = G4Material::GetMaterial("G4_TERPHENYL");
@@ -1658,7 +1660,7 @@ namespace grape
     // Logical Volume
     auto ORing_LV = new G4LogicalVolume(
                   ORing_S,         // its solid
-                  mNylon,               //! its material
+                  mORing,               //! its material
                   "ORing_LV");     // its name
 
     // Physical Volume
@@ -2353,17 +2355,10 @@ namespace grape
     detElement_Cal_LV -> SetVisAttributes( G4VisAttributes::GetInvisible() );
 
    auto check_VisAtt = new G4VisAttributes( violet );
-  //  world_LV ->        SetVisAttributes( check_VisAtt );
-  //  module_LV ->       SetVisAttributes( check_VisAtt );
-  //  detColumn_C_LV ->  SetVisAttributes( check_VisAtt );
-  //  detColumn_S_LV ->  SetVisAttributes( check_VisAtt );
-  //  detColumn_Cal_LV ->SetVisAttributes( check_VisAtt );
    SCINT_Case_LV ->   SetVisAttributes( check_VisAtt );
    SCINT_Case_Top_LV->SetVisAttributes( check_VisAtt );
    SCINT_Case_Bot_LV->SetVisAttributes( check_VisAtt );
-  //  detElement_C_LV -> SetVisAttributes( check_VisAtt );
-  //  detElement_S_LV -> SetVisAttributes( check_VisAtt );
-  //  detElement_Cal_LV -> SetVisAttributes( check_VisAtt );
+
 
   auto wrap_VisAtt = new G4VisAttributes( orange );
   wrap_VisAtt -> SetVisibility( true );
