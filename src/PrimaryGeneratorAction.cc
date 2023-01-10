@@ -2,8 +2,10 @@
 //
 //
 //  Gamma-RAy Polarimeter Experiment (GRAPE)
-//  Cube Balloon Flight
-//  Created: Mar 2, 2022 by Camden Ertley
+//  August 2023 Balloon Flight Campaign
+//  (V1) Created: Mar 2, 2022 by Camden Ertley
+//  (V2) Created: September 23, 2022 by Camden Ertley
+//  (V3) same as V1
 //
 //
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
