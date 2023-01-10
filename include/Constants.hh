@@ -5,7 +5,7 @@
 //  August 2023 Balloon Flight Campaign
 //  (V1) Created: Mar 2, 2022 by Camden Ertley
 //  (V2) Created: September 23, 2022 by Camden Ertley
-//  (V3) Edited: Dec 26, 2022 by Karla Onate Melecio
+//  (V3) Modified: Dec 26, 2022 by Karla Onate Melecio
 //
 //
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -199,7 +199,7 @@ namespace grape
   //--------------------------------------------------------
   // Shield (SHSN) Base Plate - Tin
   //--------------------------------------------------------
-  constexpr auto kSHSN_Thickness = 2.0*mm;
+  constexpr auto kSHSN_Thickness = 1.0*mm;
   constexpr auto kSHSN_Bot_Xsize = kENCL_Bot_Xsize + 2.0*kENCL_Thickness;
   constexpr auto kSHSN_Bot_Ysize = kENCL_Bot_Ysize + 2.0*kENCL_Thickness;
   constexpr auto kSHSN_Bot_Zsize = kSHSN_Thickness;
@@ -207,7 +207,7 @@ namespace grape
   //--------------------------------------------------------
   // Shield (SHPB) Base Plate - Lead
   //--------------------------------------------------------
-  constexpr auto kSHPB_Thickness = 4.0*mm;
+  constexpr auto kSHPB_Thickness = 4.5*mm;
   constexpr auto kSHPB_Bot_Xsize = kENCL_Bot_Xsize + 2.0*kENCL_Thickness + 2.0*kSHSN_Thickness;
   constexpr auto kSHPB_Bot_Ysize = kENCL_Bot_Ysize + 2.0*kENCL_Thickness + 2.0*kSHSN_Thickness;
   constexpr auto kSHPB_Bot_Zsize = kSHPB_Thickness;
