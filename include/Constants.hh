@@ -197,19 +197,30 @@ namespace grape
   constexpr auto kENCL_Bot_Zsize = kENCL_Thickness;
 
   //--------------------------------------------------------
+  // Shield (SHCU) Base Plate - Copper
+  //--------------------------------------------------------
+  constexpr auto kSHCU_Thickness = 2.0*mm;
+  constexpr auto kSHCU_Bot_Xsize = kENCL_Bot_Xsize + 2.0*kENCL_Thickness;
+  constexpr auto kSHCU_Bot_Ysize = kENCL_Bot_Ysize + 2.0*kENCL_Thickness;
+  constexpr auto kSHCU_Bot_Zsize = kSHCU_Thickness;
+
+
+  //--------------------------------------------------------
   // Shield (SHSN) Base Plate - Tin
   //--------------------------------------------------------
   constexpr auto kSHSN_Thickness = 1.0*mm;
-  constexpr auto kSHSN_Bot_Xsize = kENCL_Bot_Xsize + 2.0*kENCL_Thickness;
-  constexpr auto kSHSN_Bot_Ysize = kENCL_Bot_Ysize + 2.0*kENCL_Thickness;
+  constexpr auto kSHSN_Bot_Xsize = kENCL_Bot_Xsize + 2.0*kENCL_Thickness + 2.0*kSHCU_Thickness;
+  constexpr auto kSHSN_Bot_Ysize = kENCL_Bot_Ysize + 2.0*kENCL_Thickness + 2.0*kSHCU_Thickness;
   constexpr auto kSHSN_Bot_Zsize = kSHSN_Thickness;
+
+
 
   //--------------------------------------------------------
   // Shield (SHPB) Base Plate - Lead
   //--------------------------------------------------------
   constexpr auto kSHPB_Thickness = 4.5*mm;
-  constexpr auto kSHPB_Bot_Xsize = kENCL_Bot_Xsize + 2.0*kENCL_Thickness + 2.0*kSHSN_Thickness;
-  constexpr auto kSHPB_Bot_Ysize = kENCL_Bot_Ysize + 2.0*kENCL_Thickness + 2.0*kSHSN_Thickness;
+  constexpr auto kSHPB_Bot_Xsize = kENCL_Bot_Xsize + 2.0*kENCL_Thickness + 2.0*kSHSN_Thickness + 2.0*kSHCU_Thickness;
+  constexpr auto kSHPB_Bot_Ysize = kENCL_Bot_Ysize + 2.0*kENCL_Thickness + 2.0*kSHSN_Thickness + 2.0*kSHCU_Thickness;
   constexpr auto kSHPB_Bot_Zsize = kSHPB_Thickness;
 
   //--------------------------------------------------------
@@ -309,12 +320,36 @@ namespace grape
   constexpr auto kENCL_Side2_Zsize = kENCL_Side1_Zsize;
 
   //--------------------------------------------------------
+  // Enclosure (SHCU) Side - Copper
+  //--------------------------------------------------------
+  constexpr auto kSHCU_Side1_Xsize = kSHCU_Thickness;
+  constexpr auto kSHCU_Side1_Ysize = kSHCU_Bot_Ysize + 2*kSHCU_Thickness;
+  constexpr auto kSHCU_Side1_Zsize = 
+                  kSHCU_Bot_Zsize +
+                  kENCL_Bot_Zsize +
+                  kAPB_Zoffset +
+                  kAPB_Zsize +
+                  kAPB_MIB_Zoffset +
+                  kMIB_Zsize +
+                  kMIBP_Zoffset +
+                  kMIBP_Zsize +
+                  kScint_Case_Zsize +
+                  kENCL_Top_Zoffset +
+                  kENCL_Top_Zsize;
+
+  constexpr auto kSHCU_Side2_Xsize = kSHCU_Bot_Ysize + 2*kSHCU_Thickness;
+  constexpr auto kSHCU_Side2_Ysize = kSHCU_Thickness;
+  constexpr auto kSHCU_Side2_Zsize = kSHCU_Side1_Zsize;
+
+
+  //--------------------------------------------------------
   // Enclosure (SHSN) Side - Tin
   //--------------------------------------------------------
   constexpr auto kSHSN_Side1_Xsize = kSHSN_Thickness;
   constexpr auto kSHSN_Side1_Ysize = kSHSN_Bot_Ysize + 2*kSHSN_Thickness;
   constexpr auto kSHSN_Side1_Zsize = 
                   kSHSN_Bot_Zsize +
+                  kSHCU_Bot_Zsize +
                   kENCL_Bot_Zsize +
                   kAPB_Zoffset +
                   kAPB_Zsize +
@@ -339,6 +374,7 @@ namespace grape
   constexpr auto kSHPB_Side1_Zsize = 
                   kSHPB_Bot_Zsize +
                   kSHSN_Bot_Zsize +
+                  kSHCU_Bot_Zsize +
                   kENCL_Bot_Zsize +
                   kAPB_Zoffset +
                   kAPB_Zsize +

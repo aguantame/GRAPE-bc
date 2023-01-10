@@ -135,6 +135,7 @@ namespace grape
     nistManager -> FindOrBuildMaterial("G4_Pb");
     nistManager -> FindOrBuildMaterial("G4_Si");
     nistManager -> FindOrBuildMaterial("G4_Sn");
+    nistManager -> FindOrBuildMaterial("G4_Cu");
 
 
     // ALUMINUM 6061
@@ -329,6 +330,7 @@ namespace grape
     // auto mAir = G4Material::GetMaterial("G4_AIR");
     auto mPb = G4Material::GetMaterial("G4_Pb");
     auto mSn = G4Material::GetMaterial("G4_Sn");
+    auto mCu = G4Material::GetMaterial("G4_Cu");
     
     auto mNylon = G4Material::GetMaterial( "G4_NYLON-11_RILSAN" );
     auto mDetectorWrap = G4Material::GetMaterial( "Reflective_Wrap" );
@@ -500,6 +502,41 @@ namespace grape
                   0,                    // copy number
                   fCheckOverlaps);      // checking overlaps 
 
+    //----------------------------------
+    // Base Shield - Copper 
+    //----------------------------------
+    // Solid Volume
+    auto SHCU_Bot_X = kSHCU_Bot_Xsize;
+    auto SHCU_Bot_Y = kSHCU_Bot_Ysize;
+    auto SHCU_Bot_Z = kSHCU_Bot_Zsize;
+
+    auto SHCU_Bot_S = new G4Box(
+                  "SHCU_Bot_S",         // its name
+                  SHCU_Bot_X/2,         // its X dimension 
+                  SHCU_Bot_Y/2,         // its Y dimension
+                  SHCU_Bot_Z/2);        // its Z dimension
+    
+    // Logical Volume
+    auto SHCU_Bot_LV = new G4LogicalVolume(
+                  SHCU_Bot_S,           // its solid
+                  mCu,                  // its material
+                  "SHCU_Bot_LV");       // its name
+
+    // Pysical Volume
+    auto SHCU_Bot_Xpos = 0.0*mm;
+    auto SHCU_Bot_Ypos = 0.0*mm;
+    auto SHCU_Bot_Zpos = -mod_Z/2 + SHPB_Bot_Z + SHSN_Bot_Z/2 + SHCU_Bot_Z/2;
+    auto SHCU_Bot_Pos = G4ThreeVector( SHCU_Bot_Xpos, SHCU_Bot_Ypos, SHCU_Bot_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  SHCU_Bot_Pos,         // its position
+                  SHCU_Bot_LV,          // its logical volume
+                  "SHCU_Bot_PV",        // its name
+                  module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
 
         
     //----------------------------------
@@ -525,7 +562,7 @@ namespace grape
     // Pysical Volume
     auto ENCL_Bot_Xpos = 0.0*mm;
     auto ENCL_Bot_Ypos = 0.0*mm;
-    auto ENCL_Bot_Zpos = -mod_Z/2 + SHPB_Bot_Z + SHSN_Bot_Z + ENCL_Bot_Z/2;
+    auto ENCL_Bot_Zpos = -mod_Z/2 + SHPB_Bot_Z + SHSN_Bot_Z + SHCU_Bot_Z/2 + ENCL_Bot_Z/2;
     auto ENCL_Bot_Pos = G4ThreeVector( ENCL_Bot_Xpos, ENCL_Bot_Ypos, ENCL_Bot_Zpos );
 
     new G4PVPlacement(
@@ -608,7 +645,7 @@ namespace grape
     // Logical Volume
     auto SHSN_Side1_LV = new G4LogicalVolume(
                   SHSN_Side1_S,         // its solid
-                  mPb,              // its material
+                  mSn,              // its material
                   "SHSN_Side1_LV");     // its name
 
     // Pysical Volume
@@ -642,6 +679,60 @@ namespace grape
                   false,                // no boolean operation
                   0,                    // copy number
                   fCheckOverlaps);      // checking overlaps 
+
+
+    //----------------------------------
+    // Side1 Shield - Copper
+    //----------------------------------
+    // Solid Volume
+    auto SHCU_Side1_X = kSHCU_Side1_Xsize;
+    auto SHCU_Side1_Y = kSHCU_Side1_Ysize;
+    auto SHCU_Side1_Z = kSHCU_Side1_Zsize;
+
+    auto SHCU_Side1_S = new G4Box(
+                  "SHCU_Side1_S",       // its name
+                  SHCU_Side1_X/2,       // its X dimension 
+                  SHCU_Side1_Y/2,       // its Y dimension
+                  SHCU_Side1_Z/2);      // its Z dimension
+    
+    // Logical Volume
+    auto SHCU_Side1_LV = new G4LogicalVolume(
+                  SHCU_Side1_S,         // its solid
+                  mCu,              // its material
+                  "SHCU_Side1_LV");     // its name
+
+    // Pysical Volume
+    auto SHCU_Side1_Xpos = 0.0*mm;
+    auto SHCU_Side1_Ypos = 0.0*mm;
+    auto SHCU_Side1_Zpos = SHCU_Bot_Zpos - SHCU_Bot_Z/2 + SHCU_Side1_Z/2;
+    auto SHCU_Side1_Pos = G4ThreeVector();
+
+    SHCU_Side1_Xpos = SHCU_Bot_X/2 + SHCU_Side1_X/2;
+    SHCU_Side1_Pos = G4ThreeVector( SHCU_Side1_Xpos, SHCU_Side1_Ypos, SHCU_Side1_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  SHCU_Side1_Pos,       // its position
+                  SHCU_Side1_LV,        // its logical volume
+                  "SHCU_Side1_PV",      // its name
+                  module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    SHCU_Side1_Xpos = -SHCU_Bot_X/2 - SHCU_Side1_X/2;
+    SHCU_Side1_Pos = G4ThreeVector( SHCU_Side1_Xpos, SHCU_Side1_Ypos, SHCU_Side1_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  SHCU_Side1_Pos,       // its position
+                  SHCU_Side1_LV,        // its logical volume
+                  "SHCU_Side1_PV",      // its name
+                  module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
 
 
     //----------------------------------
@@ -767,7 +858,7 @@ namespace grape
     // Logical Volume
     auto SHSN_Side2_LV = new G4LogicalVolume(
                   SHSN_Side2_S,         // its solid
-                  mPb,              // its material
+                  mSn,              // its material
                   "SHSN_Side2_LV");     // its name
 
     // Pysical Volume
@@ -797,6 +888,58 @@ namespace grape
                   SHSN_Side2_Pos,       // its position
                   SHSN_Side2_LV,        // its logical volume
                   "SHSN_Side2_PV",      // its name
+                  module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    //----------------------------------
+    // Side2 Shield - Copper
+    //----------------------------------
+    // Solid Volume
+    auto SHCU_Side2_X = kSHCU_Side2_Xsize;
+    auto SHCU_Side2_Y = kSHCU_Side2_Ysize;
+    auto SHCU_Side2_Z = kSHCU_Side2_Zsize;
+
+    auto SHCU_Side2_S = new G4Box(
+                  "SHCU_Side2_S",       // its name
+                  SHCU_Side2_X/2,       // its X dimension 
+                  SHCU_Side2_Y/2,       // its Y dimension
+                  SHCU_Side2_Z/2);      // its Z dimension
+    
+    // Logical Volume
+    auto SHCU_Side2_LV = new G4LogicalVolume(
+                  SHCU_Side2_S,         // its solid
+                  mCu,              // its material
+                  "SHCU_Side2_LV");     // its name
+
+    // Pysical Volume
+    auto SHCU_Side2_Xpos = 0.0*mm;
+    auto SHCU_Side2_Ypos = 0.0*mm;
+    auto SHCU_Side2_Zpos = SHCU_Bot_Zpos - SHCU_Bot_Z/2 + SHCU_Side2_Z/2;
+    auto SHCU_Side2_Pos = G4ThreeVector();
+
+    SHCU_Side2_Ypos = SHCU_Bot_Y/2 + SHCU_Side2_Y/2;
+    SHCU_Side2_Pos = G4ThreeVector( SHCU_Side2_Xpos, SHCU_Side2_Ypos, SHCU_Side2_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  SHCU_Side2_Pos,       // its position
+                  SHCU_Side2_LV,        // its logical volume
+                  "SHCU_Side2_PV",      // its name
+                  module_LV,            // its mother  volume
+                  false,                // no boolean operation
+                  0,                    // copy number
+                  fCheckOverlaps);      // checking overlaps 
+
+    SHCU_Side2_Ypos = -SHCU_Bot_Y/2 - SHCU_Side2_Y/2;
+    SHCU_Side2_Pos = G4ThreeVector( SHCU_Side2_Xpos, SHCU_Side2_Ypos, SHCU_Side2_Zpos );
+
+    new G4PVPlacement(
+                  0,                    // its rotation
+                  SHCU_Side2_Pos,       // its position
+                  SHCU_Side2_LV,        // its logical volume
+                  "SHCU_Side2_PV",      // its name
                   module_LV,            // its mother  volume
                   false,                // no boolean operation
                   0,                    // copy number
