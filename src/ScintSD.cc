@@ -2,8 +2,10 @@
 //
 //
 //  Gamma-RAy Polarimeter Experiment (GRAPE)
-//  Cube Balloon Flight
-//  Created: Mar 2, 2022 by Camden Ertley
+//  August 2023 Balloon Flight Campaign
+//  (V1) Created: Mar 2, 2022 by Camden Ertley
+//  (V2) Created: September 23, 2022 by Camden Ertley
+//  (V3) Modified: Dec 26, 2022 by Karla Onate Melecio
 //
 //
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -126,21 +128,17 @@ namespace grape
       G4int dtype = 0;
       
       auto matName = logical->GetMaterial()->GetName();
-      if ( matName == "G4_CESIUM_IODIDE" ) {
-      	type = "CsI";
+      if ( matName == "GAGG" ) {
+      	type = "GAGG";
       	dtype = 2;
       }
       else if ( matName == "G4_PLASTIC_SC_VINYLTOLUENE" ) {
       	type = "Plastic";
-      	dtype = 1;
+      	dtype = 3;
       }
       else if ( matName == "G4_TERPHENYL" ) {
       	type = "p-Terphenyl";
       	dtype = 1;
-      }
-      else if ( matName == "GAGG" ) {
-      	type = "GAGG";
-      	dtype = 2;
       }
       else {
         G4cerr << "---> Type: " << matName << G4endl;
