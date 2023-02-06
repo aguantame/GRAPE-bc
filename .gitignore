@@ -9,7 +9,8 @@
 *.pdf
 *.txt
 .DS_Store
-DetConstructionFigs/*
+data/
+/macros/bc/
 
 
 # VSCode
