@@ -7,7 +7,6 @@
 *.xlsx
 *.root
 *.pdf
-*.txt
 .DS_Store
 data/
 /macros/bc/
