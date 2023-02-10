@@ -2,8 +2,10 @@
 //
 //
 //  Gamma-RAy Polarimeter Experiment (GRAPE)
-//  Cube Balloon Flight
-//  Created: Mar 2, 2022 by Camden Ertley
+//  August 2023 Balloon Flight Campaign
+//  (V1) Created: Mar 2, 2022 by Camden Ertley
+//  (V2) Created: September 23, 2022 by Camden Ertley
+//  (V3) Modified: Dec 26, 2022 by Karla Onate Melecio
 //
 //
 //%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%
@@ -189,7 +191,8 @@ namespace grape
     }
     
     else if ( type == "GAGG" ) { 
-      auto sigma = ( 0.033306 * energy ) + 4.218475; // fit to GRAPE calibration data
+      // auto sigma = ( 0.033306 * energy ) + 4.218475; // fit to GRAPE calibration data
+      auto sigma = 1.42 + 0.90 * sqrt( energy ) ;
       energy = G4RandGauss::shoot( energy, sigma );
     }
 
