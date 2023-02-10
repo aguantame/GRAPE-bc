@@ -34,17 +34,18 @@ namespace grape
   constexpr auto kNumC = 145;
   constexpr auto kNumP = 100; //! not including tagged sources
   
-  //--------------------------------------------------------
+  //--------------------------------------------------------------
   // Scintillator Elements and Array
-  //--------------------------------------------------------
+  //--------------------------------------------------------------
   constexpr auto kScint_Xsize = 12.5*mm;
   constexpr auto kScint_Ysize = 12.5*mm;
   constexpr auto kScint_Zsize = 12.5*mm;
 
-  constexpr auto kScint_Xpitch = 21.1*mm;
-  constexpr auto kScint_Ypitch = 21.1*mm;
-  constexpr auto kScint_Zpitch = 21.84*mm; //! based on avg measurements
-  // constexpr auto kScint_Zpitch = 17.5*mm;
+  // there are .875*mm between the scint cases
+  constexpr auto kScint_Xpitch = 23.495*mm;
+  constexpr auto kScint_Ypitch = 23.495*mm;
+  constexpr auto kScint_Zpitch = 21.844*mm;
+
 
 
   constexpr auto kNumScint_X = 7;
@@ -58,9 +59,9 @@ namespace grape
   constexpr auto kCal_Rmax = 5.0*mm;
   constexpr auto kCal_Zsize = 10.0*mm;
 
-  //--------------------------------------------------------
+  //--------------------------------------------------------------
   // Optical Interface and Readout Board
-  //--------------------------------------------------------
+  //--------------------------------------------------------------
 
   // Optical Pad
   constexpr auto kOpticalPad_Xsize = kScint_Xsize;
@@ -78,9 +79,9 @@ namespace grape
   constexpr auto kSiPM_PCB_Zsize = 1.57*mm;
 
 
-  //--------------------------------------------------------
+  //--------------------------------------------------------------
   // Detector Elements
-  //--------------------------------------------------------
+  //--------------------------------------------------------------
   //! Individual Det Assembly
   constexpr auto kDetAssembly_Zsize = kScint_Zsize + kOpticalPad_Zsize + kSiPM_Zsize + kSiPM_PCB_Zsize;
   
@@ -98,7 +99,7 @@ namespace grape
   constexpr auto kWrappedDetAssembly_Zsize = kScint_Zsize + kOpticalPad_Zsize + kSiPM_Zsize + kSiPM_PCB_Zsize + 2*kDetWrap_Thickness;
 
   //! SiPM Gap (5.07 mm without wrap based on drawings)
-  constexpr auto kDet_Gap = 21.84 -
+  constexpr auto kDet_Gap = kScint_Zpitch -
                            (kScint_Zsize + 
                             kOpticalPad_Zsize + 
                             kSiPM_Zsize + 
@@ -163,93 +164,128 @@ namespace grape
 
 
 
-  //--------------------------------------------------------
-  // Electronics
-  //--------------------------------------------------------
+  //--------------------------------------------------------------
+  // DAQ Container - Electronics
+  //--------------------------------------------------------------
+
+  //! Scintillator wrap  (adds ~2.05 mm in xyz)
+  constexpr auto kDAQ_ENCL_Thickness = 11.1125*mm;
+  constexpr auto kDAQ_ENCL_BOT_Thickness = 6.32*mm;
+
+  constexpr auto kDAQ_ENCL_Xsize = 255.59*mm;
+  constexpr auto kDAQ_ENCL_Ysize = 255.59*mm;
+  constexpr auto kDAQ_ENCL_Zsize = 177.8*mm;
+
+  constexpr auto kDAQ_ENCL_Hole_Xsize = kDAQ_ENCL_Xsize - 2*kDAQ_ENCL_Thickness;
+  constexpr auto kDAQ_ENCL_Hole_Ysize = kDAQ_ENCL_Xsize - 2*kDAQ_ENCL_Thickness;
+  constexpr auto kDAQ_ENCL_Hole_Zsize = kDAQ_ENCL_Zsize + 2*kDAQ_ENCL_BOT_Thickness;
 
 
-
-  // Module Interface Board (MIB)
+  // DetModule Interface Board (MIB)
   constexpr auto kMIB_Xsize = 152.0;
   constexpr auto kMIB_Ysize = 152.0;
   constexpr auto kMIB_Zsize = 1.5*mm;
+  constexpr auto kMIB_Zoffset = 2.7*mm;
+
 
   // Analog Power Board (APB)
-  constexpr auto kAPB_Xsize = 1.5*mm;
-  constexpr auto kAPB_Ysize = 147.0*mm;
-  constexpr auto kAPB_Zsize = 120.0*mm;
+  constexpr auto kAPB_Xsize = 1.2*mm;
+  constexpr auto kAPB_Ysize = 25.0*mm;
+  constexpr auto kAPB_Zsize = 38.1*mm;
   constexpr auto kAPB_Zoffset = 4.0*mm; // baseplate offset
 
-  // APB - MIB Connectors
+  constexpr auto kAPB_X_Pitch = 21.1*mm;
+  constexpr auto kAPB_Y_Pitch = 34.0*mm;
+  
+
+  // APB - MIB Connectors (Samtech Cable Connectors?)
+  constexpr auto kNumAPB = 6;
   constexpr auto kAPB_MIB_Zoffset = 2.0*mm;
-  constexpr auto kAPB_Con_Xsize = 5.0*mm;
-  constexpr auto kAPB_Con_Ysize = 75.0*mm;
-  constexpr auto kAPB_Con_Zsize = 10.0*mm;
+  constexpr auto kAPB_Con_Pitch = 96.7*mm;
+  constexpr auto kAPB_Con_Xsize = 24.8*mm; //size of inner shield cutouts
+  constexpr auto kAPB_Con_Ysize = 4.9*mm; //size of inner shield cutouts
+  constexpr auto kAPB_Con_Zsize = 3.8*mm; //size of inner shield cutouts
 
-  //--------------------------------------------------------
+  // DAQ - Inner Shield Connectors (Samtech Cable Connectors?)
+  constexpr auto kNumSHOLES = 6;
+  constexpr auto kDAQ_INR_SHOLES_Xsize = 23.0*mm; //size of inner shield cutouts
+  constexpr auto kDAQ_INR_SHOLES_Ysize = 76.2*mm; //size of inner shield cutouts
+  constexpr auto kDAQ_INR_SHOLES_Zsize = 9.1*mm; //size of inner shield cutouts
+
+
+  //--------------------------------------------------------------
   // Instrument Structural Compenents
-  //--------------------------------------------------------
+  //--------------------------------------------------------------
 
-  // Enclosure (ENCL) Base Plate 
-  constexpr auto kENCL_Thickness = 5.0*mm;
-  constexpr auto kENCL_Bot_Xsize = 162.0*mm;
+  //--------------------------------------------------------------
+  // Inner Enclosure Base Plates 
+  // Copper > Tin > Lead > Aluminum
+  //--------------------------------------------------------------
+  // Inner shield Z-offset
+  constexpr auto kINNER_SHLD_Zoffset = 95.3*mm;
+
+  // Inner Enclosure (ENCL) Base Plate - Aluminum
+  constexpr auto kENCL_Thickness = 1.5875*mm;
+  constexpr auto kENCL_Bot_Xsize = 226.1*mm; //162.0*mm;
   constexpr auto kENCL_Bot_Ysize = 162.0*mm;
   constexpr auto kENCL_Bot_Zsize = kENCL_Thickness;
 
-  //--------------------------------------------------------
-  // Shield (SHCU) Base Plate - Copper
-  //--------------------------------------------------------
-  constexpr auto kSHCU_Thickness = 2.0*mm;
-  constexpr auto kSHCU_Bot_Xsize = kENCL_Bot_Xsize + 2.0*kENCL_Thickness;
+  //--------------------------------------------------------------
+  // (SHCU) Inner Shield Base Plate - Copper
+  //--------------------------------------------------------------
+  constexpr auto kSHCU_Thickness = 2.066*mm;
+  constexpr auto kSHCU_Bot_Xsize = 226.1*mm; //kENCL_Bot_Xsize + 2.0*kENCL_Thickness;
   constexpr auto kSHCU_Bot_Ysize = kENCL_Bot_Ysize + 2.0*kENCL_Thickness;
   constexpr auto kSHCU_Bot_Zsize = kSHCU_Thickness;
 
 
-  //--------------------------------------------------------
-  // Shield (SHSN) Base Plate - Tin
-  //--------------------------------------------------------
-  constexpr auto kSHSN_Thickness = 1.0*mm;
-  constexpr auto kSHSN_Bot_Xsize = kENCL_Bot_Xsize + 2.0*kENCL_Thickness + 2.0*kSHCU_Thickness;
+  //--------------------------------------------------------------
+  // (SHSN) Inner Shield Base Plate - Tin
+  //--------------------------------------------------------------
+  constexpr auto kSHSN_Thickness = 0.9906*mm;
+  constexpr auto kSHSN_Bot_Xsize = 226.1*mm; //kENCL_Bot_Xsize + 2.0*kENCL_Thickness + 2.0*kSHCU_Thickness;
   constexpr auto kSHSN_Bot_Ysize = kENCL_Bot_Ysize + 2.0*kENCL_Thickness + 2.0*kSHCU_Thickness;
   constexpr auto kSHSN_Bot_Zsize = kSHSN_Thickness;
 
 
-
-  //--------------------------------------------------------
-  // Shield (SHPB) Base Plate - Lead
-  //--------------------------------------------------------
-  constexpr auto kSHPB_Thickness = 4.5*mm;
-  constexpr auto kSHPB_Bot_Xsize = kENCL_Bot_Xsize + 2.0*kENCL_Thickness + 2.0*kSHSN_Thickness + 2.0*kSHCU_Thickness;
+  //--------------------------------------------------------------
+  // (SHPB) Inner Shield Base Plate - Lead
+  //--------------------------------------------------------------
+  constexpr auto kSHPB_Thickness = 4.4958*mm;
+  constexpr auto kSHPB_Bot_Xsize = 226.1*mm; //kENCL_Bot_Xsize + 2.0*kENCL_Thickness + 2.0*kSHSN_Thickness + 2.0*kSHCU_Thickness;
   constexpr auto kSHPB_Bot_Ysize = kENCL_Bot_Ysize + 2.0*kENCL_Thickness + 2.0*kSHSN_Thickness + 2.0*kSHCU_Thickness;
   constexpr auto kSHPB_Bot_Zsize = kSHPB_Thickness;
 
-  //--------------------------------------------------------
+  //--------------------------------------------------------------
   // Enclosure (ENCL) Top
-  //--------------------------------------------------------
-  constexpr auto kENCL_Top_Xsize = kScint_Xpitch;
-  constexpr auto kENCL_Top_Ysize = kScint_Ypitch;
-  constexpr auto kENCL_Top_Zsize = 7.5*mm;
+  //--------------------------------------------------------------
+  // bottom layer of top enclosure is 4.4958
+  constexpr auto kENCL_Top_Xsize = 23.5*mm;
+  constexpr auto kENCL_Top_Ysize = 23.5*mm;
+  constexpr auto kENCL_Top_Zsize = 6.32*mm;
 
+  // Enclosure top holes begin 9.815mm from edge
   constexpr auto kENCL_Top_Hole_Xsize = kScint_Case_Top_Xsize;
   constexpr auto kENCL_Top_Hole_Ysize = kScint_Case_Top_Ysize;
   constexpr auto kENCL_Top_Hole_Zsize = 2*kENCL_Top_Zsize;
 
   constexpr auto kENCL_Top_Zoffset = 0.75*mm;
 
-  //--------------------------------------------------------
+  //--------------------------------------------------------------
   // Enclosure (ENCL) Top Edge
-  //--------------------------------------------------------
-  constexpr auto kENCL_TopEdge_Xsize = kENCL_Bot_Xsize;
-  constexpr auto kENCL_TopEdge_Ysize = kENCL_Bot_Ysize;
+  //--------------------------------------------------------------
+  constexpr auto kENCL_TopEdge_Xsize = 181.864*mm;
+  constexpr auto kENCL_TopEdge_Ysize = 181.864*mm;
   constexpr auto kENCL_TopEdge_Zsize = kENCL_Top_Zsize;
 
+  // there are 2.695mm of space between the scint case tops
   constexpr auto kENCL_TopEdge_Hole_Xsize = kNumScint_X * kScint_Xpitch;
   constexpr auto kENCL_TopEdge_Hole_Ysize = kNumScint_Y * kScint_Ypitch;
   constexpr auto kENCL_TopEdge_Hole_Zsize = 2*kENCL_TopEdge_Zsize;
 
-  //--------------------------------------------------------
+  //--------------------------------------------------------------
   // MIB Plate
-  //--------------------------------------------------------
+  //--------------------------------------------------------------
   constexpr auto kMIBP_Xsize = kScint_Xpitch;
   constexpr auto kMIBP_Ysize = kScint_Ypitch;
   constexpr auto kMIBP_Zsize = 10.5*mm;
@@ -261,20 +297,32 @@ namespace grape
 
   constexpr auto kMIBP_Zoffset = 1.5*mm;
 
-  //--------------------------------------------------------
+  //--------------------------------------------------------------
   // MIB Plate Edge
-  //--------------------------------------------------------
-  constexpr auto kMIBP_Edge_Xsize = kENCL_Bot_Xsize;
-  constexpr auto kMIBP_Edge_Ysize = kENCL_Bot_Ysize;
-  constexpr auto kMIBP_Edge_Zsize = kMIBP_Zsize;
+  //--------------------------------------------------------------
+  constexpr auto kMIBP_Edge_Xsize = 255.6*mm;//kENCL_Bot_Xsize;
+  constexpr auto kMIBP_Edge_Ysize = 255.6*mm;//kENCL_Bot_Ysize;
+  constexpr auto kMIBP_Edge_Zsize = 6.35*mm;
 
   constexpr auto kMIBP_Edge_Hole_Xsize = kNumScint_X * kScint_Xpitch;
   constexpr auto kMIBP_Edge_Hole_Ysize = kNumScint_Y * kScint_Ypitch;
   constexpr auto kMIBP_Edge_Hole_Zsize = 2*kMIBP_Edge_Zsize;
 
-  //--------------------------------------------------------
+  //--------------------------------------------------------------
+  // Bus Board Mounts
+  //--------------------------------------------------------------
+  constexpr auto kMIBP_Mount_Xsize = 255.6*mm;//kENCL_Bot_Xsize;
+  constexpr auto kMIBP_Mount_Ysize = 255.6*mm;//kENCL_Bot_Ysize;
+  constexpr auto kMIBP_Mount_Zsize = 4.4958*mm;
+
+  constexpr auto kMIBP_Mount_Hole_Xsize = kNumScint_X * kScint_Xpitch;
+  constexpr auto kMIBP_Mount_Hole_Ysize = kNumScint_Y * kScint_Ypitch;
+  constexpr auto kMIBP_Mount_Hole_Zsize = 2*kMIBP_Mount_Zsize;
+
+
+  //--------------------------------------------------------------
   // DETECTOR Column
-  //--------------------------------------------------------
+  //--------------------------------------------------------------
   constexpr auto kDetColumn_Xsize = kScint_Xpitch;
   constexpr auto kDetColumn_Ysize = kScint_Ypitch;
   constexpr auto kDetColumn_Zsize = 
@@ -283,116 +331,134 @@ namespace grape
                   kScint_Case_Zsize +
                   kScint_Case_Top_Zsize;
 
-  //--------------------------------------------------------
-  // MODULE
-  //--------------------------------------------------------
-  constexpr auto kModule_Xsize = kENCL_Bot_Xsize + 2*kENCL_Thickness + 2*kSHSN_Thickness + 2*kSHPB_Thickness;
-  constexpr auto kModule_Ysize = kENCL_Bot_Ysize + 2*kENCL_Thickness + 2*kSHSN_Thickness + 2*kSHPB_Thickness;
-  constexpr auto kModule_Zsize = 
-  			      kSHPB_Bot_Zsize +
-				  kSHSN_Bot_Zsize +
-                  kENCL_Bot_Zsize +
-                  kAPB_Zoffset +
-                  kAPB_Zsize +
-                  kAPB_MIB_Zoffset +
-                  kMIB_Zsize +
-                  kDetColumn_Zsize;
+  //--------------------------------------------------------------
+  // Detector Shield Sides
+  //--------------------------------------------------------------
+  constexpr auto kSHAL_Thickness = 8.89*mm;
+  constexpr auto kSHLD_Side2_Thickness =  kSHAL_Thickness;//kSHCU_Thickness + kSHSN_Thickness + kSHPB_Thickness + kENCL_Thickness;
 
-  //--------------------------------------------------------
-  // Enclosure (ENCL) Side
-  //--------------------------------------------------------
-  constexpr auto kENCL_Side1_Xsize = kENCL_Thickness;
-  constexpr auto kENCL_Side1_Ysize = kENCL_Bot_Ysize + 2*kENCL_Thickness;
-  constexpr auto kENCL_Side1_Zsize = 
-                  kENCL_Bot_Zsize +
-                  kAPB_Zoffset +
-                  kAPB_Zsize +
-                  kAPB_MIB_Zoffset +
-                  kMIB_Zsize +
-                  kMIBP_Zoffset +
-                  kMIBP_Zsize +
-                  kScint_Case_Zsize +
-                  kENCL_Top_Zoffset +
-                  kENCL_Top_Zsize;
 
-  constexpr auto kENCL_Side2_Xsize = kENCL_Bot_Ysize + 2*kENCL_Thickness;
-  constexpr auto kENCL_Side2_Ysize = kENCL_Thickness;
-  constexpr auto kENCL_Side2_Zsize = kENCL_Side1_Zsize;
+  //--------------------------------------------------------------
+  // Enclosure (SHAL) Side - Aluminum
+  //--------------------------------------------------------------
+  constexpr auto kSHAL_Side1_Xsize = kSHAL_Thickness;
+  constexpr auto kSHAL_Side1_Ysize = kENCL_TopEdge_Ysize;
+  constexpr auto kSHAL_Side1_Zsize = 101.65*mm - kENCL_Top_Zsize;
 
-  //--------------------------------------------------------
+
+  constexpr auto kSHAL_Side2_Xsize = kENCL_TopEdge_Ysize - 2*kSHAL_Thickness;
+  constexpr auto kSHAL_Side2_Ysize = kSHAL_Thickness;
+  constexpr auto kSHAL_Side2_Zsize = kSHAL_Side1_Zsize;
+
+  //--------------------------------------------------------------
   // Enclosure (SHCU) Side - Copper
-  //--------------------------------------------------------
+  //--------------------------------------------------------------
   constexpr auto kSHCU_Side1_Xsize = kSHCU_Thickness;
-  constexpr auto kSHCU_Side1_Ysize = kSHCU_Bot_Ysize + 2*kSHCU_Thickness;
-  constexpr auto kSHCU_Side1_Zsize = 
-                  kSHCU_Bot_Zsize +
-                  kENCL_Bot_Zsize +
-                  kAPB_Zoffset +
-                  kAPB_Zsize +
-                  kAPB_MIB_Zoffset +
-                  kMIB_Zsize +
-                  kMIBP_Zoffset +
-                  kMIBP_Zsize +
-                  kScint_Case_Zsize +
-                  kENCL_Top_Zoffset +
-                  kENCL_Top_Zsize;
+  constexpr auto kSHCU_Side1_Ysize = kENCL_TopEdge_Ysize;
+  constexpr auto kSHCU_Side1_Zsize = 101.65*mm;
 
-  constexpr auto kSHCU_Side2_Xsize = kSHCU_Bot_Ysize + 2*kSHCU_Thickness;
+
+  constexpr auto kSHCU_Side2_Xsize = kENCL_TopEdge_Ysize + 2*kSHLD_Side2_Thickness;
   constexpr auto kSHCU_Side2_Ysize = kSHCU_Thickness;
   constexpr auto kSHCU_Side2_Zsize = kSHCU_Side1_Zsize;
 
 
-  //--------------------------------------------------------
+  //--------------------------------------------------------------
   // Enclosure (SHSN) Side - Tin
-  //--------------------------------------------------------
+  //--------------------------------------------------------------
   constexpr auto kSHSN_Side1_Xsize = kSHSN_Thickness;
-  constexpr auto kSHSN_Side1_Ysize = kSHSN_Bot_Ysize + 2*kSHSN_Thickness;
-  constexpr auto kSHSN_Side1_Zsize = 
-                  kSHSN_Bot_Zsize +
-                  kSHCU_Bot_Zsize +
-                  kENCL_Bot_Zsize +
-                  kAPB_Zoffset +
-                  kAPB_Zsize +
-                  kAPB_MIB_Zoffset +
-                  kMIB_Zsize +
-                  kMIBP_Zoffset +
-                  kMIBP_Zsize +
-                  kScint_Case_Zsize +
-                  kENCL_Top_Zoffset +
-                  kENCL_Top_Zsize;
+  constexpr auto kSHSN_Side1_Ysize = kENCL_TopEdge_Ysize;
+  constexpr auto kSHSN_Side1_Zsize = 101.65*mm;
 
-  constexpr auto kSHSN_Side2_Xsize = kSHSN_Bot_Ysize + 2*kSHSN_Thickness;
+
+  constexpr auto kSHSN_Side2_Xsize = kENCL_TopEdge_Ysize + 2*kSHLD_Side2_Thickness;
   constexpr auto kSHSN_Side2_Ysize = kSHSN_Thickness;
   constexpr auto kSHSN_Side2_Zsize = kSHSN_Side1_Zsize;
 
 
-  //--------------------------------------------------------
+  //--------------------------------------------------------------
   // Enclosure (SHPB) Side - Lead
-  //--------------------------------------------------------
+  //--------------------------------------------------------------
   constexpr auto kSHPB_Side1_Xsize = kSHPB_Thickness;
-  constexpr auto kSHPB_Side1_Ysize = kSHPB_Bot_Ysize + 2*kSHPB_Thickness;
-  constexpr auto kSHPB_Side1_Zsize = 
-                  kSHPB_Bot_Zsize +
-                  kSHSN_Bot_Zsize +
-                  kSHCU_Bot_Zsize +
-                  kENCL_Bot_Zsize +
-                  kAPB_Zoffset +
-                  kAPB_Zsize +
-                  kAPB_MIB_Zoffset +
-                  kMIB_Zsize +
-                  kMIBP_Zoffset +
-                  kMIBP_Zsize +
-                  kScint_Case_Zsize +
-                  kENCL_Top_Zoffset +
-                  kENCL_Top_Zsize;
+  constexpr auto kSHPB_Side1_Ysize = kENCL_TopEdge_Ysize;
+  constexpr auto kSHPB_Side1_Zsize = 101.65*mm;
 
-  constexpr auto kSHPB_Side2_Xsize = kSHPB_Bot_Ysize + 2*kSHPB_Thickness;
+
+  constexpr auto kSHPB_Side2_Xsize = kENCL_TopEdge_Ysize + 2*kSHLD_Side2_Thickness;
   constexpr auto kSHPB_Side2_Ysize = kSHPB_Thickness;
   constexpr auto kSHPB_Side2_Zsize = kSHPB_Side1_Zsize;
 
-  //--------------------------------------------------------
+  //--------------------------------------------------------------
+  // Enclosure (ENCL) Side
+  //--------------------------------------------------------------
+  constexpr auto kENCL_Side1_Xsize = kENCL_Thickness;
+  constexpr auto kENCL_Side1_Ysize = kENCL_TopEdge_Ysize;
+  constexpr auto kENCL_Side1_Zsize = 101.65*mm;
+
+
+  constexpr auto kENCL_Side2_Xsize = kENCL_TopEdge_Ysize + 2*kSHLD_Side2_Thickness;
+  constexpr auto kENCL_Side2_Ysize = kENCL_Thickness;
+  constexpr auto kENCL_Side2_Zsize = kENCL_Side1_Zsize;
+
+ //--------------------------------------------------------------
+  // Power Container - Electronics
+  //--------------------------------------------------------------
+
+  constexpr auto kPower_ENCL_Thickness = 6.32*mm;
+
+  constexpr auto kPower_ENCL_Xsize = 255.59*mm;
+  constexpr auto kPower_ENCL_Ysize = 255.59*mm;
+  constexpr auto kPower_ENCL_Zsize = 54.00*mm;
+
+  constexpr auto kPower_ENCL_Hole_Xsize = kPower_ENCL_Xsize - 2*kPower_ENCL_Thickness;
+  constexpr auto kPower_ENCL_Hole_Ysize = kPower_ENCL_Xsize - 2*kPower_ENCL_Thickness;
+  constexpr auto kPower_ENCL_Hole_Zsize = kPower_ENCL_Zsize + 2*kPower_ENCL_Thickness;
+
+
+  //--------------------------------------------------------------
+  // PAYLOAD MODULE
+  //--------------------------------------------------------------
+  constexpr auto kPayload_Module_Xsize = 255.6*mm;
+  constexpr auto kPayload_Module_Ysize = 255.6*mm;
+  constexpr auto kPayload_Module_Zsize = 344.1*mm;
+
+
+  //--------------------------------------------------------------
+  // DETECTOR MODULE
+  //--------------------------------------------------------------
+  constexpr auto kDet_Module_Xsize = 255.6*mm;
+  constexpr auto kDet_Module_Ysize = 255.6*mm;
+  constexpr auto kDet_Module_Zsize = 112.3*mm;
+  			  //     kSHPB_Bot_Zsize +
+				  // kSHSN_Bot_Zsize +
+          //         kENCL_Bot_Zsize +
+          //         kAPB_Zoffset +
+          //         kAPB_Zsize +
+          //         kAPB_MIB_Zoffset +
+          //         kMIB_Zsize +
+          //         kDetColumn_Zsize;
+
+
+  //--------------------------------------------------------------
+  // DAQ MODULE (EBOX1) : (Connectors, Asics, FPGA, InnerShield)
+  //--------------------------------------------------------------
+  constexpr auto kDAQ_Module_Xsize = 255.6*mm;
+  constexpr auto kDAQ_Module_Ysize = 255.6*mm;
+  constexpr auto kDAQ_Module_Zsize = 177.8*mm;
+
+
+  //--------------------------------------------------------------
+  // POWER MODULE (EBOX2) : (Computer, Power Supplies, etc.)
+  //--------------------------------------------------------------
+  constexpr auto kPower_Module_Xsize = 255.6*mm;
+  constexpr auto kPower_Module_Ysize = 255.6*mm;
+  constexpr auto kPower_Module_Zsize = 54.0*mm;
+
+
+
+  //--------------------------------------------------------------
   // WORLD
-  //--------------------------------------------------------
+  //--------------------------------------------------------------
   constexpr auto kWorld_Xsize = 5.0*m;
   constexpr auto kWorld_Ysize = 5.0*m;
   constexpr auto kWorld_Zsize = 5.0*m;
